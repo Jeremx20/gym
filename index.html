@@ -1,2908 +1,828 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <meta name="theme-color" content="#07070e"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <meta name="apple-mobile-web-app-title" content="Hunter Body"/>
-  <title>Hunter Body Protocol</title>
-  <link rel="manifest" href="manifest.json"/>
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <style>
-    html,body,#root{height:100%;margin:0;padding:0;background:#07070e;}
-    body{overflow-x:hidden;-webkit-tap-highlight-color:transparent;}
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Hunter Body"/>
+<meta name="theme-color" content="#07070e"/>
+<base href="/gym/"/>
+  <link rel="manifest" href="/gym/manifest.json"/>
+  <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/192/dumbbell.png"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+<title>Hunter Body Protocol</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:#07070e;color:#fff;font-family:'Rajdhani',sans-serif;overflow-x:hidden;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:#07070e;}::-webkit-scrollbar-thumb{background:#ffffff22;border-radius:2px;}
+.orb{font-family:'Orbitron',monospace;}
+button{font-family:'Rajdhani',sans-serif;border:none;cursor:pointer;transition:opacity .15s,transform .1s;}
+button:active{opacity:.75;transform:scale(.97);}
+input{font-family:'Rajdhani',sans-serif;color:#fff;outline:none;}
+textarea{font-family:'Rajdhani',sans-serif;color:#fff;outline:none;resize:none;}
+#app{max-width:480px;margin:0 auto;padding:16px 13px 70px;position:relative;z-index:1;}
+/* Particles */
+#particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.pt{position:absolute;border-radius:50%;opacity:.1;}
+/* Scanline */
+#scan{position:fixed;top:0;left:0;right:0;height:2px;z-index:999;pointer-events:none;animation:scan 8s linear infinite;}
+@keyframes scan{0%{transform:translateY(-2px)}100%{transform:translateY(100vh)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 12px var(--rg)}50%{box-shadow:0 0 32px var(--rg),0 0 55px var(--rg)}}
+@keyframes fp{0%{transform:translateY(0) scale(1)}100%{transform:translateY(-18px) scale(1.3)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeUp .25s ease forwards;}
+/* Layout */
+.card{background:linear-gradient(135deg,#0e0e1a,#0a0a12);border:1px solid #ffffff0d;border-radius:12px;padding:14px;margin-bottom:10px;}
+.card-lbl{font-family:'Orbitron',monospace;font-size:9px;color:#ffffff33;letter-spacing:3px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px;}
+.stat-card{background:linear-gradient(135deg,#0e0e1a,#0a0a12);border:1px solid #ffffff0d;border-radius:12px;padding:12px 13px;}
+.stat-lbl{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:2px;margin-bottom:4px;}
+.stat-val{font-family:'Orbitron',monospace;font-size:21px;font-weight:900;color:#fff;}
+.stat-sub{font-size:11px;color:#ffffff44;margin-top:2px;}
+/* Progress bar */
+.prog-track{height:5px;background:#ffffff0a;border-radius:3px;overflow:hidden;}
+.prog-bar{height:100%;border-radius:3px;transition:width .7s ease;}
+/* Tabs */
+#tabs{display:flex;gap:5px;margin-bottom:13px;}
+.tab-btn{flex:1;padding:7px 2px;border-radius:8px;border:1px solid #ffffff15;background:#ffffff06;color:#ffffff44;font-size:10px;font-weight:700;letter-spacing:.5px;line-height:1.3;}
+.tab-btn.active{border-color:var(--rc);color:var(--rc);background:rgba(var(--rc-raw),.1);}
+/* Header */
+#header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding:13px 16px;background:linear-gradient(135deg,#0e0e1a,#111118);border-radius:14px;border:1px solid #ffffff0d;}
+.rank-badge{width:62px;height:62px;border-radius:13px;border:2px solid var(--rc);display:flex;flex-direction:column;align-items:center;justify-content:center;background:#07070e;animation:pulse 3s infinite;}
+.rank-val{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:var(--rc);}
+/* Buttons */
+.sm-btn{padding:4px 10px;border-radius:5px;font-family:'Orbitron',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;}
+.act-btn{width:100%;padding:12px;border-radius:11px;font-family:'Orbitron',monospace;font-size:11px;letter-spacing:1px;cursor:pointer;text-align:center;}
+/* Exercise row */
+.ex-row{border-radius:8px;overflow:hidden;margin-bottom:7px;}
+.ex-head{display:flex;align-items:center;gap:9px;padding:10px 12px;cursor:pointer;}
+.ex-check{width:22px;height:22px;border-radius:5px;border:2px solid #ffffff2a;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;transition:all .2s;}
+.set-badge{padding:3px 7px;border-radius:4px;font-family:'Orbitron',monospace;font-size:9px;display:inline-block;margin:2px;}
+/* Day buttons */
+.day-btn{padding:5px 9px;border-radius:6px;border:1px solid #ffffff1a;background:#ffffff08;color:#ffffff44;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;}
+.day-btn.active{color:var(--dc);background:rgba(var(--dc-raw),.13);border-color:var(--dc);}
+/* Meal row */
+.meal-row{display:flex;align-items:center;gap:11px;padding:12px 13px;border-radius:8px;cursor:pointer;margin-bottom:6px;transition:background .15s;}
+/* Modal */
+#modal-overlay{display:none;position:fixed;inset:0;background:#000000cc;z-index:1000;align-items:center;justify-content:center;padding:18px;}
+#modal-overlay.show{display:flex;}
+#modal-box{background:#0e0e1a;border:1px solid var(--rc);border-radius:16px;padding:22px;width:100%;max-width:340px;box-shadow:0 0 40px var(--rg);max-height:88vh;overflow-y:auto;}
+.modal-title{font-family:'Orbitron',monospace;font-size:13px;color:var(--rc);margin-bottom:3px;}
+.modal-sub{font-size:11px;color:#ffffff44;margin-bottom:15px;}
+.m-input{width:100%;background:#ffffff08;border:1px solid var(--rc);border-opacity:.3;border-color:rgba(var(--rc-raw),.25);border-radius:8px;padding:11px 13px;font-size:15px;color:#fff;display:block;margin-bottom:7px;}
+.m-btns{display:flex;gap:8px;margin-top:5px;}
+.m-cancel{flex:1;padding:11px;border-radius:8px;border:1px solid #ffffff1a;background:transparent;color:#ffffff55;font-size:13px;}
+.m-ok{flex:1;padding:11px;border-radius:8px;font-family:'Orbitron',monospace;font-size:11px;letter-spacing:1px;border:1px solid var(--rc);background:rgba(var(--rc-raw),.15);color:var(--rc);}
+/* Timer */
+#timer-bar{display:none;position:fixed;bottom:72px;left:50%;transform:translateX(-50%);z-index:500;background:#0e0e1a;border:2px solid var(--rc);border-radius:14px;padding:12px 20px;align-items:center;gap:14px;box-shadow:0 0 30px var(--rg);}
+#timer-bar.show{display:flex;}
+#timer-val{font-family:'Orbitron',monospace;font-size:30px;font-weight:900;color:var(--rc);}
+/* Bottom nav placeholder */
+.section{display:none;}.section.active{display:block;}
+/* Rank bars */
+.rank-bar{flex:1;text-align:center;padding:3px 0;border-radius:4px;font-family:'Orbitron',monospace;font-size:10px;}
+/* History chart */
+.chart-bar{border-radius:2px 2px 0 0;margin-top:auto;}
+/* Notif banner */
+.notif-ok{background:#00ff8815;border:1px solid #00ff8844;color:#00ff88;}
+.notif-off{background:#ffffff08;border:1px solid #ffffff11;color:#ffffff44;}
+</style>
 </head>
 <body>
-  <div id="root"></div>
-  <script>
-const { useState, useEffect, useRef, useCallback } = React;
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i.return) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
-function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
-function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
-function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
-function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-// ─── CONSTANTS ───────────────────────────────────────────────────────────────
-var STORAGE_KEY = "hunter_body_v3";
-var START_DATE = "2026-06-08";
-var KG_TO_LBS = 2.20462;
-var PROGRAM = {
-  Lundi: {
-    label: "PUSH",
-    color: "#ff4444",
-    icon: "🔥",
-    exercises: [{
-      name: "Développé couché",
-      sets: 4,
-      reps: "6-10",
-      rest: 150,
-      restLabel: "2-3 min"
-    }, {
-      name: "Développé incliné haltères",
-      sets: 3,
-      reps: "8-12",
-      rest: 105,
-      restLabel: "90-120 sec"
-    }, {
-      name: "Dips",
-      sets: 3,
-      reps: "8-12 ou max",
-      rest: 90,
-      restLabel: "90 sec"
-    }, {
-      name: "Élévations latérales",
-      sets: 4,
-      reps: "12-20",
-      rest: 60,
-      restLabel: "60 sec"
-    }, {
-      name: "Triceps pushdown",
-      sets: 3,
-      reps: "10-15",
-      rest: 68,
-      restLabel: "60-75 sec"
-    }, {
-      name: "Extension triceps au-dessus",
-      sets: 2,
-      reps: "10-15",
-      rest: 68,
-      restLabel: "60-75 sec"
-    }]
-  },
-  Mardi: {
-    label: "PULL",
-    color: "#4488ff",
-    icon: "⚡",
-    exercises: [{
-      name: "Tractions / tirage vertical",
-      sets: 4,
-      reps: "6-10",
-      rest: 120,
-      restLabel: "2 min"
-    }, {
-      name: "Rowing barre ou machine",
-      sets: 4,
-      reps: "8-12",
-      rest: 105,
-      restLabel: "90-120 sec"
-    }, {
-      name: "Tirage horizontal",
-      sets: 3,
-      reps: "10-12",
-      rest: 90,
-      restLabel: "90 sec"
-    }, {
-      name: "Face pull",
-      sets: 3,
-      reps: "12-20",
-      rest: 60,
-      restLabel: "60 sec"
-    }, {
-      name: "Curl biceps barre",
-      sets: 3,
-      reps: "8-12",
-      rest: 68,
-      restLabel: "60-75 sec"
-    }, {
-      name: "Curl incliné ou marteau",
-      sets: 2,
-      reps: "10-12",
-      rest: 68,
-      restLabel: "60-75 sec"
-    }]
-  },
-  Mercredi: {
-    label: "REPOS",
-    color: "#444",
-    icon: "💤",
-    exercises: []
-  },
-  Jeudi: {
-    label: "LEGS",
-    color: "#aa44ff",
-    icon: "💪",
-    exercises: [{
-      name: "Squat",
-      sets: 4,
-      reps: "6-10",
-      rest: 150,
-      restLabel: "2-3 min"
-    }, {
-      name: "Leg press",
-      sets: 3,
-      reps: "10-15",
-      rest: 90,
-      restLabel: "90 sec"
-    }, {
-      name: "Romanian deadlift",
-      sets: 3,
-      reps: "8-12",
-      rest: 105,
-      restLabel: "90-120 sec"
-    }, {
-      name: "Leg curl",
-      sets: 3,
-      reps: "10-15",
-      rest: 68,
-      restLabel: "60-75 sec"
-    }, {
-      name: "Mollets",
-      sets: 4,
-      reps: "12-20",
-      rest: 53,
-      restLabel: "45-60 sec"
-    }, {
-      name: "Abdos",
-      sets: 3,
-      reps: "12-20",
-      rest: 53,
-      restLabel: "45-60 sec"
-    }]
-  },
-  Vendredi: {
-    label: "HAUT DU CORPS",
-    color: "#ffaa00",
-    icon: "⚔️",
-    exercises: [{
-      name: "Développé incliné",
-      sets: 3,
-      reps: "8-12",
-      rest: 105,
-      restLabel: "90-120 sec"
-    }, {
-      name: "Tractions / tirage vertical",
-      sets: 3,
-      reps: "8-12",
-      rest: 90,
-      restLabel: "90 sec"
-    }, {
-      name: "Rowing",
-      sets: 3,
-      reps: "8-12",
-      rest: 90,
-      restLabel: "90 sec"
-    }, {
-      name: "Élévations latérales",
-      sets: 4,
-      reps: "12-20",
-      rest: 60,
-      restLabel: "60 sec"
-    }, {
-      name: "Curl biceps",
-      sets: 3,
-      reps: "10-12",
-      rest: 60,
-      restLabel: "60 sec"
-    }, {
-      name: "Triceps pushdown",
-      sets: 3,
-      reps: "10-12",
-      rest: 60,
-      restLabel: "60 sec"
-    }]
-  },
-  Samedi: {
-    label: "CARDIO LÉGER",
-    color: "#00ccaa",
-    icon: "🏃",
-    cardioOnly: true,
-    exercises: [{
-      name: "Marche rapide / jogging",
-      sets: 1,
-      reps: "20-30 min",
-      rest: 0,
-      restLabel: "—"
-    }, {
-      name: "Vélo ou elliptique",
-      sets: 1,
-      reps: "15-20 min",
-      rest: 0,
-      restLabel: "—"
-    }, {
-      name: "Abdos",
-      sets: 3,
-      reps: "15-20",
-      rest: 45,
-      restLabel: "45 sec"
-    }, {
-      name: "Étirements / mobilité",
-      sets: 1,
-      reps: "10-15 min",
-      rest: 0,
-      restLabel: "—"
-    }]
-  },
-  Dimanche: {
-    label: "REPOS",
-    color: "#444",
-    icon: "💤",
-    exercises: []
-  }
-};
-var DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
-var MEALS = [{
-  id: "pre",
-  label: "Pré-workout",
-  icon: "🍌",
-  kcal: 200,
-  hour: 7
-}, {
-  id: "post",
-  label: "Post-workout",
-  icon: "🥛",
-  kcal: 900,
-  hour: 9
-}, {
-  id: "lunch",
-  label: "Déjeuner",
-  icon: "🍚",
-  kcal: 600,
-  hour: 12
-}, {
-  id: "snack",
-  label: "Collation",
-  icon: "🥜",
-  kcal: 300,
-  hour: 16
-}, {
-  id: "dinner",
-  label: "Dîner",
-  icon: "🍖",
-  kcal: 700,
-  hour: 20
-}, {
-  id: "sleep",
-  label: "Avant-sommeil",
-  icon: "🥛",
-  kcal: 200,
-  hour: 22
-}];
-var DELOAD_EVERY = 6; // weeks
+<div id="particles"></div>
+<div id="scan"></div>
+<div id="app"></div>
 
-var DEFAULT = {
-  unit: "kg",
-  heightCm: 178,
-  currentWeight: 57,
-  targetWeight: 67.5,
-  weightHistory: [],
-  sessions: {},
-  sessionLogs: {},
-  sessionNotes: {},
-  meals: {},
-  calorieLog: {},
-  charges: {},
-  measurements: {},
-  measureHistory: [],
-  notifEnabled: false,
-  weeksSinceDeload: 0
+<!-- Timer bar -->
+<div id="timer-bar">
+  <div>
+    <div class="orb" style="font-size:9px;color:var(--rc);letter-spacing:2px;" id="timer-exname">REPOS</div>
+    <div id="timer-val">0:00</div>
+  </div>
+  <button class="sm-btn" style="background:transparent;border:1px solid var(--rc);color:var(--rc);" onclick="skipTimer()">SKIP</button>
+</div>
+
+<!-- Modal -->
+<div id="modal-overlay" onclick="closeModal(event)">
+  <div id="modal-box">
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════
+const STORAGE_KEY = "hunter_body_v3";
+const START_DATE  = "2026-06-08";
+const KG_TO_LBS   = 2.20462;
+const DELOAD_EVERY= 6;
+
+const PROGRAM = {
+  Lundi:    {label:"PUSH",         color:"#ff4444",craw:"255,68,68",   icon:"🔥", exercises:[
+    {name:"Développé couché",           sets:4,reps:"6-10",       rest:150,rl:"2-3 min"},
+    {name:"Développé incliné haltères", sets:3,reps:"8-12",       rest:105,rl:"90-120 sec"},
+    {name:"Dips",                       sets:3,reps:"8-12 ou max",rest:90, rl:"90 sec"},
+    {name:"Élévations latérales",       sets:4,reps:"12-20",      rest:60, rl:"60 sec"},
+    {name:"Triceps pushdown",           sets:3,reps:"10-15",      rest:68, rl:"60-75 sec"},
+    {name:"Extension triceps au-dessus",sets:2,reps:"10-15",      rest:68, rl:"60-75 sec"},
+  ]},
+  Mardi:    {label:"PULL",         color:"#4488ff",craw:"68,136,255",  icon:"⚡", exercises:[
+    {name:"Tractions / tirage vertical",sets:4,reps:"6-10", rest:120,rl:"2 min"},
+    {name:"Rowing barre ou machine",    sets:4,reps:"8-12", rest:105,rl:"90-120 sec"},
+    {name:"Tirage horizontal",          sets:3,reps:"10-12",rest:90, rl:"90 sec"},
+    {name:"Face pull",                  sets:3,reps:"12-20",rest:60, rl:"60 sec"},
+    {name:"Curl biceps barre",          sets:3,reps:"8-12", rest:68, rl:"60-75 sec"},
+    {name:"Curl incliné ou marteau",    sets:2,reps:"10-12",rest:68, rl:"60-75 sec"},
+  ]},
+  Mercredi: {label:"REPOS",        color:"#555",   craw:"85,85,85",    icon:"💤", exercises:[]},
+  Jeudi:    {label:"LEGS",         color:"#aa44ff",craw:"170,68,255",  icon:"💪", exercises:[
+    {name:"Squat",            sets:4,reps:"6-10", rest:150,rl:"2-3 min"},
+    {name:"Leg press",        sets:3,reps:"10-15",rest:90, rl:"90 sec"},
+    {name:"Romanian deadlift",sets:3,reps:"8-12", rest:105,rl:"90-120 sec"},
+    {name:"Leg curl",         sets:3,reps:"10-15",rest:68, rl:"60-75 sec"},
+    {name:"Mollets",          sets:4,reps:"12-20",rest:53, rl:"45-60 sec"},
+    {name:"Abdos",            sets:3,reps:"12-20",rest:53, rl:"45-60 sec"},
+  ]},
+  Vendredi: {label:"HAUT DU CORPS",color:"#ffaa00",craw:"255,170,0",   icon:"⚔️", exercises:[
+    {name:"Développé incliné",          sets:3,reps:"8-12", rest:105,rl:"90-120 sec"},
+    {name:"Tractions / tirage vertical",sets:3,reps:"8-12", rest:90, rl:"90 sec"},
+    {name:"Rowing",                     sets:3,reps:"8-12", rest:90, rl:"90 sec"},
+    {name:"Élévations latérales",       sets:4,reps:"12-20",rest:60, rl:"60 sec"},
+    {name:"Curl biceps",                sets:3,reps:"10-12",rest:60, rl:"60 sec"},
+    {name:"Triceps pushdown",           sets:3,reps:"10-12",rest:60, rl:"60 sec"},
+  ]},
+  Samedi:   {label:"CARDIO LÉGER", color:"#00ccaa",craw:"0,204,170",   icon:"🏃", cardio:true, exercises:[
+    {name:"Marche rapide / jogging",sets:1,reps:"20-30 min",rest:0,rl:"—"},
+    {name:"Vélo ou elliptique",     sets:1,reps:"15-20 min",rest:0,rl:"—"},
+    {name:"Abdos",                  sets:3,reps:"15-20",    rest:45,rl:"45 sec"},
+    {name:"Étirements / mobilité",  sets:1,reps:"10-15 min",rest:0,rl:"—"},
+  ]},
+  Dimanche: {label:"REPOS",        color:"#555",   craw:"85,85,85",    icon:"💤", exercises:[]},
 };
 
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
-var toKg = function toKg(v, u) {
-  return u === "lbs" ? v / KG_TO_LBS : v;
+const DAYS = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
+const MEALS = [
+  {id:"pre",   label:"Pré-workout",  icon:"🍌",kcal:200, hour:7},
+  {id:"post",  label:"Post-workout", icon:"🥛",kcal:900, hour:9},
+  {id:"lunch", label:"Déjeuner",     icon:"🍚",kcal:600, hour:12},
+  {id:"snack", label:"Collation",    icon:"🥜",kcal:300, hour:16},
+  {id:"dinner",label:"Dîner",        icon:"🍖",kcal:700, hour:20},
+  {id:"sleep", label:"Avant-sommeil",icon:"🥛",kcal:200, hour:22},
+];
+
+const ALL_EX = [...new Set(Object.values(PROGRAM).flatMap(d=>d.exercises.map(e=>e.name)))];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+const DEF = {
+  unit:"kg",heightCm:178,currentWeight:57,targetWeight:67.5,
+  weightHistory:[],sessions:{},sessionLogs:{},sessionNotes:{},
+  meals:{},calorieLog:{},charges:{},measurements:{},measureHistory:[],
+  notifEnabled:false
 };
-var toDisp = function toDisp(kg, u) {
-  return u === "lbs" ? +(kg * KG_TO_LBS).toFixed(1) : +kg.toFixed(1);
-};
-var uLabel = function uLabel(u) {
-  return u === "lbs" ? "lbs" : "kg";
-};
-var tKey = function tKey() {
-  return new Date().toISOString().split("T")[0];
-};
-var dayName = function dayName() {
-  return ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"][new Date().getDay()];
-};
-var bmi = function bmi(w, h) {
-  return (w / Math.pow(h / 100, 2)).toFixed(1);
-};
-var tdee = function tdee(w, h) {
-  return Math.round((10 * w + 6.25 * h - 5 * 22 + 5) * 1.55);
-};
-var weeksLeft = function weeksLeft(c, t) {
-  return t <= c ? 0 : Math.ceil((t - c) / 0.3);
-};
-var daysToStart = function daysToStart() {
-  var d = new Date(START_DATE) - new Date(tKey());
-  return Math.max(0, Math.ceil(d / 86400000));
-};
-var isBeforeStart = function isBeforeStart() {
-  return tKey() < START_DATE;
-};
-function getRank(w, t) {
-  var p = (w - 57) / (t - 57) * 100;
-  if (p >= 100) return {
-    rank: "S",
-    color: "#ffd700",
-    glow: "#ffd70088"
-  };
-  if (p >= 80) return {
-    rank: "A",
-    color: "#ff4444",
-    glow: "#ff444488"
-  };
-  if (p >= 60) return {
-    rank: "B",
-    color: "#aa44ff",
-    glow: "#aa44ff88"
-  };
-  if (p >= 40) return {
-    rank: "C",
-    color: "#4488ff",
-    glow: "#4488ff88"
-  };
-  if (p >= 20) return {
-    rank: "D",
-    color: "#00ccaa",
-    glow: "#00ccaa88"
-  };
-  return {
-    rank: "E",
-    color: "#888888",
-    glow: "#88888844"
-  };
+
+let S = (() => {
+  try { const s=localStorage.getItem(STORAGE_KEY); return s?{...DEF,...JSON.parse(s)}:DEF; }
+  catch { return DEF; }
+})();
+
+function save(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(S)); render(); }
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+const toKg   = (v,u) => u==="lbs" ? v/KG_TO_LBS : v;
+const toDisp = (kg,u)=> u==="lbs" ? +(kg*KG_TO_LBS).toFixed(1) : +kg.toFixed(1);
+const uLbl   = u => u==="lbs"?"lbs":"kg";
+const tKey   = ()=> new Date().toISOString().split("T")[0];
+const todayName=()=>["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"][new Date().getDay()];
+const calcBMI=(w,h)=>(w/((h/100)**2)).toFixed(1);
+const calcTDEE=(w,h)=>Math.round((10*w+6.25*h-5*22+5)*1.55);
+const wksLeft=(c,t)=>t<=c?0:Math.ceil((t-c)/0.3);
+const daysToStart=()=>{const d=new Date(START_DATE)-new Date(tKey());return Math.max(0,Math.ceil(d/86400000));};
+const beforeStart=()=>tKey()<START_DATE;
+
+function getRank(w,t){
+  const p=((w-57)/(t-57))*100;
+  if(p>=100)return{r:"S",c:"#ffd700",cr:"255,215,0",   g:"#ffd70088"};
+  if(p>=80) return{r:"A",c:"#ff4444",cr:"255,68,68",   g:"#ff444488"};
+  if(p>=60) return{r:"B",c:"#aa44ff",cr:"170,68,255",  g:"#aa44ff88"};
+  if(p>=40) return{r:"C",c:"#4488ff",cr:"68,136,255",  g:"#4488ff88"};
+  if(p>=20) return{r:"D",c:"#00ccaa",cr:"0,204,170",   g:"#00ccaa88"};
+  return          {r:"E",c:"#888",   cr:"136,136,136", g:"#88888866"};
 }
 
-// ─── MAIN APP ─────────────────────────────────────────────────────────────────
-function App() {
-  var _data$weightHistory$s;
-  var _useState = useState(function () {
-      try {
-        var s = localStorage.getItem(STORAGE_KEY);
-        return s ? _objectSpread(_objectSpread({}, DEFAULT), JSON.parse(s)) : DEFAULT;
-      } catch (_unused) {
-        return DEFAULT;
-      }
-    }),
-    _useState2 = _slicedToArray(_useState, 2),
-    data = _useState2[0],
-    setData = _useState2[1];
-  var _useState3 = useState("dashboard"),
-    _useState4 = _slicedToArray(_useState3, 2),
-    tab = _useState4[0],
-    setTab = _useState4[1];
-  var _useState5 = useState(dayName()),
-    _useState6 = _slicedToArray(_useState5, 2),
-    selDay = _useState6[0],
-    setSelDay = _useState6[1];
-  var _useState7 = useState(null),
-    _useState8 = _slicedToArray(_useState7, 2),
-    histEx = _useState8[0],
-    setHistEx = _useState8[1]; // exercise name for history modal
-  var _useState9 = useState(null),
-    _useState0 = _slicedToArray(_useState9, 2),
-    chargeModal = _useState0[0],
-    setChargeModal = _useState0[1];
-  var _useState1 = useState(null),
-    _useState10 = _slicedToArray(_useState1, 2),
-    timerEx = _useState10[0],
-    setTimerEx = _useState10[1];
-  var _useState11 = useState(0),
-    _useState12 = _slicedToArray(_useState11, 2),
-    timerSec = _useState12[0],
-    setTimerSec = _useState12[1];
-  var _useState13 = useState(false),
-    _useState14 = _slicedToArray(_useState13, 2),
-    timerRunning = _useState14[0],
-    setTimerRunning = _useState14[1];
-  var _useState15 = useState(null),
-    _useState16 = _slicedToArray(_useState15, 2),
-    modal = _useState16[0],
-    setModal = _useState16[1]; // "weight"|"measure"|"cal"|"note"|"notif"
-  var _useState17 = useState(""),
-    _useState18 = _slicedToArray(_useState17, 2),
-    noteText = _useState18[0],
-    setNoteText = _useState18[1];
-  var _useState19 = useState({
-      weight: "",
-      charge: "",
-      reps: "",
-      cal: "",
-      chest: "",
-      waist: "",
-      arm: "",
-      thigh: ""
-    }),
-    _useState20 = _slicedToArray(_useState19, 2),
-    inputs = _useState20[0],
-    setInputs = _useState20[1];
-  var _useState21 = useState(function () {
-      return Array.from({
-        length: 25
-      }, function (_, i) {
-        return {
-          id: i,
-          x: Math.random() * 100,
-          y: Math.random() * 100,
-          s: Math.random() * 2.5 + 1,
-          sp: Math.random() * 18 + 8,
-          d: Math.random() * 4
-        };
-      });
-    }),
-    _useState22 = _slicedToArray(_useState21, 1),
-    particles = _useState22[0];
-  var timerRef = useRef(null);
-  var notifTimeouts = useRef([]);
-  useEffect(function () {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }, [data]);
+function lastSet(ex){const h=S.charges[ex]; return h&&h.length?h[h.length-1]:null;}
+function prSet(ex){const h=S.charges[ex]; return h&&h.length?h.reduce((m,e)=>e.weight>m.weight?e:m,h[0]):null;}
+function todaySetsFor(ex){return((S.sessionLogs[tKey()]||{})[ex]||[]);}
 
-  // ── Timer ──
-  useEffect(function () {
-    if (timerRunning && timerSec > 0) {
-      timerRef.current = setTimeout(function () {
-        return setTimerSec(function (s) {
-          return s - 1;
-        });
-      }, 1000);
-    } else if (timerRunning && timerSec === 0) {
-      setTimerRunning(false);
-      if (data.notifEnabled) sendNotif("⏱ Repos terminé !", "C'est reparti pour la prochaine série 💪");
+function nextReco(ex,repRange){
+  const sets=todaySetsFor(ex);
+  const ref=sets.length?sets:(()=>{const h=S.charges[ex]||[];const last=h.slice(-1)[0]?.date;return last?h.filter(e=>e.date===last):[];})();
+  if(!ref.length){const lc=lastSet(ex);return lc?{w:lc.weight,up:false,note:"Même charge"}:null;}
+  const top=parseInt((repRange||"").split("-")[1])||10;
+  const allTop=ref.every(s=>s.reps&&s.reps>=top);
+  const avg=ref.reduce((s,e)=>s+e.weight,0)/ref.length;
+  const inc=S.unit==="lbs"?toKg(5,"lbs"):2.5;
+  return allTop?{w:avg+inc,up:true,note:`Top reps → +${S.unit==="lbs"?"5 lbs":"2.5 kg"} 🔥`}:{w:avg,up:false,note:"Consolide d'abord"};
+}
+
+// ═══════════════════════════════════════════════════════════
+// TIMER
+// ═══════════════════════════════════════════════════════════
+let timerInterval=null, timerSecs=0;
+function startTimer(ex,secs){
+  clearInterval(timerInterval);
+  timerSecs=secs;
+  document.getElementById("timer-exname").textContent=ex;
+  updateTimerDisplay();
+  document.getElementById("timer-bar").classList.add("show");
+  timerInterval=setInterval(()=>{
+    timerSecs--;
+    updateTimerDisplay();
+    if(timerSecs<=0){
+      clearInterval(timerInterval);
+      document.getElementById("timer-bar").classList.remove("show");
+      if(S.notifEnabled&&Notification.permission==="granted")
+        new Notification("⏱ Repos terminé !",{body:"C'est reparti 💪"});
     }
-    return function () {
-      return clearTimeout(timerRef.current);
-    };
-  }, [timerRunning, timerSec]);
+  },1000);
+}
+function updateTimerDisplay(){
+  const el=document.getElementById("timer-val");
+  if(!el) return;
+  el.textContent=`${Math.floor(timerSecs/60)}:${String(timerSecs%60).padStart(2,"0")}`;
+  el.style.color=timerSecs<=10?"#ff4444":"var(--rc)";
+}
+function skipTimer(){ clearInterval(timerInterval); timerSecs=0; document.getElementById("timer-bar").classList.remove("show"); }
 
-  // ── Notification scheduler ──
-  useEffect(function () {
-    notifTimeouts.current.forEach(clearTimeout);
-    notifTimeouts.current = [];
-    if (!data.notifEnabled) return;
-    var now = new Date();
-    MEALS.forEach(function (m) {
-      var target = new Date();
-      target.setHours(m.hour, 0, 0, 0);
-      var diff = target - now;
-      if (diff > 0) {
-        var t = setTimeout(function () {
-          var todayMeals = data.meals[tKey()] || {};
-          if (!todayMeals[m.id]) sendNotif("\uD83C\uDF7D Heure du ".concat(m.label), "N'oublie pas ton repas \u2014 ".concat(m.kcal, " kcal"));
-        }, diff);
-        notifTimeouts.current.push(t);
-      }
-    });
-    // Séance reminder at 7h
-    var seanceTarget = new Date();
-    seanceTarget.setHours(7, 30, 0, 0);
-    var seanceDiff = seanceTarget - now;
-    var todayProg = PROGRAM[dayName()];
-    if (seanceDiff > 0 && todayProg.exercises.length > 0) {
-      var t = setTimeout(function () {
-        return sendNotif("\u2694\uFE0F S\xE9ance du jour: ".concat(todayProg.label), "Hunter Protocol activé — en route pour la salle");
-      }, seanceDiff);
-      notifTimeouts.current.push(t);
-    }
-    return function () {
-      return notifTimeouts.current.forEach(clearTimeout);
-    };
-  }, [data.notifEnabled, data.meals]);
-  function sendNotif(title, body) {
-    if (Notification.permission === "granted") new Notification(title, {
-      body: body,
-      icon: "https://img.icons8.com/fluency/48/dumbbell.png"
-    });
-  }
-  function toggleNotif() {
-    return _toggleNotif.apply(this, arguments);
-  }
-  function _toggleNotif() {
-    _toggleNotif = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-      var perm;
-      return _regenerator().w(function (_context) {
-        while (1) switch (_context.n) {
-          case 0:
-            if (data.notifEnabled) {
-              _context.n = 2;
-              break;
-            }
-            _context.n = 1;
-            return Notification.requestPermission();
-          case 1:
-            perm = _context.v;
-            if (perm === "granted") setData(function (d) {
-              return _objectSpread(_objectSpread({}, d), {}, {
-                notifEnabled: true
-              });
-            });else alert("Active les notifications dans les réglages de ton navigateur.");
-            _context.n = 3;
-            break;
-          case 2:
-            setData(function (d) {
-              return _objectSpread(_objectSpread({}, d), {}, {
-                notifEnabled: false
-              });
-            });
-          case 3:
-            return _context.a(2);
-        }
-      }, _callee);
-    }));
-    return _toggleNotif.apply(this, arguments);
-  }
-  var save = useCallback(function (fn) {
-    return setData(function (d) {
-      return _objectSpread(_objectSpread({}, d), fn(d));
-    });
-  }, []);
-  var inp = function inp(k, v) {
-    return setInputs(function (i) {
-      return _objectSpread(_objectSpread({}, i), {}, _defineProperty({}, k, v));
-    });
-  };
+// ═══════════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════════
+let currentModal=null;
+function openModal(id){ currentModal=id; renderModal(); document.getElementById("modal-overlay").classList.add("show"); }
+function closeModal(e){ if(!e||e.target===document.getElementById("modal-overlay")){document.getElementById("modal-overlay").classList.remove("show"); currentModal=null;} }
 
-  // ── Derived ──
-  var _getRank = getRank(data.currentWeight, data.targetWeight),
-    rank = _getRank.rank,
-    rc = _getRank.color,
-    rg = _getRank.glow;
-  var progPct = Math.min(100, Math.max(0, (data.currentWeight - 57) / (data.targetWeight - 57) * 100));
-  var wl = weeksLeft(data.currentWeight, data.targetWeight);
-  var today = dayName();
-  var dk = tKey();
-  var todayProg = PROGRAM[today];
-  var todaySess = data.sessions[dk] || {};
-  var todayMeals = data.meals[dk] || {};
-  var todayCal = data.calorieLog[dk] || 0;
-  var todayNote = data.sessionNotes[dk] || "";
-  var myTdee = tdee(data.currentWeight, data.heightCm);
-  var targetCal = myTdee + 400;
-  var calPct = Math.min(100, Math.round(todayCal / targetCal * 100));
-  var mealsDone = Object.values(todayMeals).filter(Boolean).length;
-  var exDone = Object.values(todaySess).filter(Boolean).length;
-  var totalEx = todayProg.exercises.length;
-  var sessPct = totalEx > 0 ? Math.round(exDone / totalEx * 100) : 0;
-  var dayLog = data.sessionLogs[dk] || {};
-  var totalVolKg = Object.values(dayLog).flat().reduce(function (s, e) {
-    return s + e.weight * (e.reps || 1);
-  }, 0);
-  var totalSetsToday = Object.values(dayLog).reduce(function (s, a) {
-    return s + a.length;
-  }, 0);
+// ═══════════════════════════════════════════════════════════
+// RENDER ENGINE
+// ═══════════════════════════════════════════════════════════
+let currentTab="dashboard";
+let currentDay=todayName();
+let histEx=null;
+
+function setCSS(){
+  const rk=getRank(S.currentWeight,S.targetWeight);
+  document.documentElement.style.setProperty("--rc",rk.c);
+  document.documentElement.style.setProperty("--rc-raw",rk.cr);
+  document.documentElement.style.setProperty("--rg",rk.g);
+  document.getElementById("scan").style.background=`linear-gradient(90deg,transparent,${rk.c}44,transparent)`;
+}
+
+function render(){
+  setCSS();
+  const app=document.getElementById("app");
+  const rk=getRank(S.currentWeight,S.targetWeight);
+  const u=S.unit;
+  const today=todayName();
+  const dk=tKey();
+  const todayProg=PROGRAM[today];
+  const myTdee=calcTDEE(S.currentWeight,S.heightCm);
+  const targetCal=myTdee+400;
+  const todayMeals=S.meals[dk]||{};
+  const todayCal=S.calorieLog[dk]||0;
+  const todaySess=S.sessions[dk]||{};
+  const exDone=Object.values(todaySess).filter(Boolean).length;
+  const totalEx=todayProg.exercises.length;
+  const sessPct=totalEx>0?Math.round((exDone/totalEx)*100):0;
+  const dayLog=S.sessionLogs[dk]||{};
+  const totalVol=Object.values(dayLog).flat().reduce((s,e)=>s+e.weight*(e.reps||1),0);
+  const totalSets=Object.values(dayLog).reduce((s,a)=>s+a.length,0);
+  const mealsDone=Object.values(todayMeals).filter(Boolean).length;
+  const calPct=Math.min(100,Math.round((todayCal/targetCal)*100));
+  const progPct=Math.min(100,Math.max(0,((S.currentWeight-57)/(S.targetWeight-57))*100));
+  const wl=wksLeft(S.currentWeight,S.targetWeight);
+  const weekNum=Math.max(0,Math.floor((new Date()-new Date(START_DATE))/604800000)+1);
+  const needsDeload=weekNum>0&&weekNum%DELOAD_EVERY===0;
 
   // Streak
-  var streak = function () {
-    var s = 0;
-    var d = new Date();
-    for (var i = 0; i < 42; i++) {
-      var k = d.toISOString().split("T")[0];
-      var dn = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"][d.getDay()];
-      var p = PROGRAM[dn];
-      if (p.exercises.length === 0) {
-        d.setDate(d.getDate() - 1);
-        continue;
-      }
-      var ss = data.sessions[k] || {};
-      if (Object.values(ss).filter(Boolean).length >= p.exercises.length * 0.5) s++;else break;
-      d.setDate(d.getDate() - 1);
-    }
-    return s;
-  }();
-
-  // Deload check
-  var weekNumber = Math.floor((new Date() - new Date(START_DATE)) / 604800000) + 1;
-  var needsDeload = weekNumber > 0 && weekNumber % DELOAD_EVERY === 0;
-
-  // Charge helpers
-  var allSets = function allSets(ex) {
-    return data.charges[ex] || [];
-  };
-  var lastSet = function lastSet(ex) {
-    var h = allSets(ex);
-    return h.length ? h[h.length - 1] : null;
-  };
-  var prSet = function prSet(ex) {
-    var h = allSets(ex);
-    return h.length ? h.reduce(function (m, e) {
-      return e.weight > m.weight ? e : m;
-    }, h[0]) : null;
-  };
-  var todaySetsFor = function todaySetsFor(ex) {
-    return dayLog[ex] || [];
-  };
-  function nextReco(ex, repRange) {
-    var sets = todaySetsFor(ex);
-    var ref = sets.length ? sets : allSets(ex).filter(function (e) {
-      var _allSets$slice$;
-      return e.date === ((_allSets$slice$ = allSets(ex).slice(-1)[0]) === null || _allSets$slice$ === void 0 ? void 0 : _allSets$slice$.date);
-    });
-    if (!ref.length) {
-      var lc = lastSet(ex);
-      return lc ? {
-        weight: lc.weight,
-        up: false,
-        note: "Même charge"
-      } : null;
-    }
-    var top = parseInt((repRange || "").split("-")[1]) || 10;
-    var allTop = ref.every(function (s) {
-      return s.reps && s.reps >= top;
-    });
-    var avg = ref.reduce(function (s, e) {
-      return s + e.weight;
-    }, 0) / ref.length;
-    var inc = data.unit === "lbs" ? toKg(5, "lbs") : 2.5;
-    return allTop ? {
-      weight: avg + inc,
-      up: true,
-      note: "Top reps \u2192 +".concat(data.unit === "lbs" ? "5 lbs" : "2.5 kg", " \uD83D\uDD25")
-    } : {
-      weight: avg,
-      up: false,
-      note: "Consolide d'abord"
-    };
-  }
-  function logSet() {
-    var c = parseFloat(inputs.charge);
-    var r = parseInt(inputs.reps);
-    if (isNaN(c) || c <= 0) return;
-    var wkg = toKg(c, data.unit);
-    save(function (d) {
-      var _d$sessionLogs$dk;
-      var ex = chargeModal;
-      var prev = d.charges[ex] || [];
-      return {
-        sessionLogs: _objectSpread(_objectSpread({}, d.sessionLogs), {}, _defineProperty({}, dk, _objectSpread(_objectSpread({}, d.sessionLogs[dk] || {}), {}, _defineProperty({}, ex, [].concat(_toConsumableArray(((_d$sessionLogs$dk = d.sessionLogs[dk]) === null || _d$sessionLogs$dk === void 0 ? void 0 : _d$sessionLogs$dk[ex]) || []), [{
-          weight: wkg,
-          reps: r || null
-        }]))))),
-        charges: _objectSpread(_objectSpread({}, d.charges), {}, _defineProperty({}, ex, [].concat(_toConsumableArray(prev), [{
-          date: dk,
-          weight: wkg,
-          reps: r || null
-        }]).slice(-200)))
-      };
-    });
-    inp("charge", "");
-    inp("reps", "");
-  }
-  function removeLastSet(ex) {
-    save(function (d) {
-      var _d$sessionLogs$dk2;
-      var sets = _toConsumableArray(((_d$sessionLogs$dk2 = d.sessionLogs[dk]) === null || _d$sessionLogs$dk2 === void 0 ? void 0 : _d$sessionLogs$dk2[ex]) || []);
-      sets.pop();
-      return {
-        sessionLogs: _objectSpread(_objectSpread({}, d.sessionLogs), {}, _defineProperty({}, dk, _objectSpread(_objectSpread({}, d.sessionLogs[dk] || {}), {}, _defineProperty({}, ex, sets))))
-      };
-    });
-  }
-  function startTimer(ex, secs) {
-    setTimerEx(ex);
-    setTimerSec(secs);
-    setTimerRunning(true);
+  let streak=0;
+  const sd=new Date();
+  for(let i=0;i<42;i++){
+    const k=sd.toISOString().split("T")[0];
+    const dn=["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"][sd.getDay()];
+    const p=PROGRAM[dn];
+    if(p.exercises.length===0){sd.setDate(sd.getDate()-1);continue;}
+    const ss=S.sessions[k]||{};
+    if(Object.values(ss).filter(Boolean).length>=p.exercises.length*0.5)streak++;
+    else break;
+    sd.setDate(sd.getDate()-1);
   }
 
-  // ─── RENDER HELPERS ──────────────────────────────────────────────────────
-  var u = data.unit;
-  function StatCard(_ref) {
-    var label = _ref.label,
-      value = _ref.value,
-      sub = _ref.sub,
-      color = _ref.color;
-    return /*#__PURE__*/React.createElement("div", {
-      style: S.statCard
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 9,
-        color: color || rc,
-        fontFamily: "'Orbitron',monospace",
-        letterSpacing: 2,
-        marginBottom: 5
-      }
-    }, label), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 21,
-        fontWeight: 900,
-        color: "#fff",
-        fontFamily: "'Orbitron',monospace"
-      }
-    }, value), sub && /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 11,
-        color: "#ffffff55",
-        fontFamily: "'Rajdhani',sans-serif",
-        marginTop: 2
-      }
-    }, sub));
+  // HEADER
+  const headerHTML=`
+  <div id="header">
+    <div>
+      <div class="orb" style="font-size:9px;color:${rk.c};letter-spacing:4px;margin-bottom:3px;">HUNTER BODY PROTOCOL</div>
+      <div class="orb" style="font-size:19px;font-weight:900;color:#fff;letter-spacing:2px;">JEREMIE</div>
+      <div style="font-size:11px;color:#ffffff44;margin-top:2px;">${S.heightCm}cm · BMI ${calcBMI(S.currentWeight,S.heightCm)} · TDEE ~${myTdee} kcal</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+      <div class="rank-badge"><div class="rank-val">${rk.r}</div><div style="font-size:8px;color:#ffffff44;letter-spacing:2px;">RANK</div></div>
+      <div style="display:flex;gap:5px;">
+        <button class="sm-btn" style="border:1px solid ${rk.c}55;background:rgba(${rk.cr},.1);color:${rk.c};" onclick="toggleUnit()">${u.toUpperCase()} ⇄</button>
+        <button class="sm-btn" style="font-size:14px;padding:3px 8px;border:1px solid ${S.notifEnabled?"#00ff8855":"#ffffff22"};background:${S.notifEnabled?"#00ff8815":"#ffffff08"};color:${S.notifEnabled?"#00ff88":"#ffffff44"};" onclick="toggleNotif()">🔔</button>
+      </div>
+    </div>
+  </div>`;
+
+  // TABS
+  const TABS=[["dashboard","⬡","DASH"],["today","⚔","SÉANCE"],["meals","🍖","REPAS"],["history","📋","HISTO"],["progress","📈","STATS"]];
+  const tabsHTML=`<div id="tabs">${TABS.map(([id,ic,lb])=>`<button class="tab-btn${currentTab===id?" active":""}" onclick="switchTab('${id}')">${ic}<br>${lb}</button>`).join("")}</div>`;
+
+  // ── DASHBOARD ──
+  let dashHTML=`
+  ${beforeStart()?`<div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+    <div><div class="orb" style="font-size:9px;color:#ffffff22;letter-spacing:3px;">DÉMARRAGE</div><div style="font-size:13px;color:#ffffff44;margin-top:2px;">Lundi 8 juin · Premier jour salle 📦</div></div>
+    <div style="text-align:right;"><div class="orb" style="font-size:30px;font-weight:900;color:#fff;line-height:1;">${daysToStart()}</div><div style="font-size:10px;color:#ffffff33;letter-spacing:2px;">JOURS</div></div>
+  </div>`:""}
+  ${needsDeload?`<div style="padding:11px 14px;border-radius:10px;background:#ffaa0010;border:1px solid #ffaa0044;color:#ffaa00;font-size:13px;margin-bottom:10px;">⚠️ Semaine ${weekNum} — Semaine de <b>décharge</b>. Charges -40%, récupère.</div>`:""}
+  <div class="grid2">
+    ${statCard(`POIDS ACTUEL`,`${toDisp(S.currentWeight,u)} ${uLbl(u)}`,`Départ: ${toDisp(57,u)} ${uLbl(u)}`,rk.c)}
+    ${statCard(`OBJECTIF`,`${toDisp(S.targetWeight,u)} ${uLbl(u)}`,`${toDisp(Math.max(0,S.targetWeight-S.currentWeight),u)} ${uLbl(u)} restants`,rk.c)}
+    ${statCard(`STREAK`,`${streak}j`,`séances conséc.`,rk.c)}
+    ${statCard(`~SEMAINES`,`${wl}`,`avant objectif`,rk.c)}
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="card-lbl">PROGRESSION RANG ${rk.r}</span><span class="orb" style="font-size:12px;color:${rk.c};">${progPct.toFixed(1)}%</span></div>
+    <div class="prog-track"><div class="prog-bar" style="width:${progPct}%;background:linear-gradient(90deg,${rk.c}88,${rk.c});"></div></div>
+    <div style="display:flex;justify-content:space-between;margin-top:5px;font-size:10px;color:#ffffff22;">${toDisp(57,u)} ${uLbl(u)} <span>${toDisp(S.targetWeight,u)} ${uLbl(u)}</span></div>
+    <div style="display:flex;gap:5px;margin-top:9px;">
+      ${["E","D","C","B","A","S"].map((r,i)=>{const act=i<=["E","D","C","B","A","S"].indexOf(rk.r);return`<div class="rank-bar" style="background:${act?`rgba(${rk.cr},.13)`:"#ffffff08"};border:1px solid ${act?rk.c:"#ffffff11"};color:${act?rk.c:"#ffffff22"};">${r}</div>`;}).join("")}
+    </div>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span class="card-lbl">CALORIES DU JOUR</span><button class="sm-btn" style="border:1px solid ${rk.c}44;background:rgba(${rk.cr},.1);color:${rk.c};" onclick="openModal('cal')">+ LOG</button></div>
+    <div style="display:flex;gap:9px;align-items:baseline;margin-bottom:7px;"><span class="orb" style="font-size:22px;color:${todayCal>=targetCal?"#00ff88":"#fff"};">${todayCal||"—"}</span><span style="font-size:12px;color:#ffffff33;">/ ${targetCal} kcal</span></div>
+    <div class="prog-track"><div class="prog-bar" style="width:${calPct}%;background:linear-gradient(90deg,${calPct>=100?"#00cc6688":"rgba("+rk.cr+",.5)"},${calPct>=100?"#00ff88":rk.c});"></div></div>
+    <div style="margin-top:5px;font-size:10px;color:#ffffff33;">TDEE ${myTdee} + 400 surplus</div>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:11px;">
+      <div style="font-size:26px;">${todayProg.icon}</div>
+      <div style="flex:1;">
+        <div class="card-lbl">${today.toUpperCase()}</div>
+        <div class="orb" style="font-size:14px;color:${todayProg.color};font-weight:700;margin-top:3px;">${todayProg.label}</div>
+        ${totalEx>0?`<div style="font-size:11px;color:#ffffff55;margin-top:2px;">${exDone}/${totalEx} exos · Vol: ${toDisp(totalVol,u).toLocaleString()} ${uLbl(u)}</div>`:""}
+      </div>
+      ${totalEx>0?`<svg width="44" height="44" style="flex-shrink:0;"><circle cx="22" cy="22" r="18" fill="none" stroke="rgba(${PROGRAM[today].craw},.15)" stroke-width="3"/><circle cx="22" cy="22" r="18" fill="none" stroke="${todayProg.color}" stroke-width="3" stroke-dasharray="${sessPct*1.131} 113.1" stroke-linecap="round" transform="rotate(-90 22 22)"/></svg>`:""}
+    </div>
+    ${(S.sessionNotes[dk])?`<div style="margin-top:9px;padding:7px 10px;border-radius:7px;background:#ffffff06;font-size:12px;color:#ffffff55;border-left:2px solid ${rk.c}44;">📝 ${S.sessionNotes[dk]}</div>`:""}
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span class="card-lbl">REPAS</span><span class="orb" style="font-size:12px;color:${mealsDone===MEALS.length?"#00ff88":rk.c};">${mealsDone}/${MEALS.length}</span></div>
+    <div style="display:flex;gap:5px;">${MEALS.map(m=>`<div style="flex:1;text-align:center;padding:4px 0;border-radius:5px;background:${todayMeals[m.id]?"#00ff8820":"#ffffff08"};border:1px solid ${todayMeals[m.id]?"#00ff8844":"#ffffff0f"};font-size:15px;">${m.icon}</div>`).join("")}</div>
+  </div>
+  <div class="grid2">
+    <button class="act-btn" style="border:1px solid ${rk.c}88;background:rgba(${rk.cr},.1);color:${rk.c};" onclick="openModal('weight')">⚖ POIDS</button>
+    <button class="act-btn" style="border:1px solid #ffffff22;background:#ffffff08;color:#ffffff66;" onclick="openModal('measure')">📏 MENSUR.</button>
+    <button class="act-btn" style="border:1px solid #ffffff22;background:#ffffff08;color:#ffffff66;" onclick="openNoteModal()">📝 NOTE SÉANCE</button>
+    <button class="act-btn" style="border:1px solid #ffffff22;background:#ffffff08;color:#ffffff66;" onclick="switchTab('history')">📋 HISTORIQUE</button>
+  </div>`;
+
+  // ── SÉANCE ──
+  const selProg=PROGRAM[currentDay];
+  const selDk=tKey();
+  const selSess=currentDay===today?(S.sessions[selDk]||{}):{};
+  let seanceHTML=`
+  <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">
+    <div style="display:flex;gap:4px;flex:1;flex-wrap:wrap;">
+      ${DAYS.map(d=>`<button class="day-btn${currentDay===d?" active":""}" style="${currentDay===d?`--dc:${PROGRAM[d].color};--dc-raw:${PROGRAM[d].craw};`:""}" onclick="setDay('${d}')">${d===today?"★":""} ${d.slice(0,d==="Mercredi"?2:2)}</button>`).join("")}
+    </div>
+    <button class="sm-btn" style="border:1px solid ${rk.c}55;background:rgba(${rk.cr},.1);color:${rk.c};flex-shrink:0;" onclick="toggleUnit()">${u.toUpperCase()} ⇄</button>
+  </div>`;
+
+  if(currentDay===today){
+    seanceHTML+=`<button class="act-btn" style="border:1px solid #ffffff1a;background:#ffffff08;color:#ffffff66;margin-bottom:9px;padding:9px;" onclick="openNoteModal()">📝 ${S.sessionNotes[dk]?"Modifier la note":"Ajouter une note de séance"}</button>`;
   }
-  function ProgBar(_ref2) {
-    var pct = _ref2.pct,
-      color = _ref2.color,
-      _ref2$height = _ref2.height,
-      height = _ref2$height === void 0 ? 5 : _ref2$height;
-    return /*#__PURE__*/React.createElement("div", {
-      style: {
-        height: height,
-        background: "#ffffff0a",
-        borderRadius: 3,
-        overflow: "hidden"
+
+  seanceHTML+=`<div class="card" style="border-color:${selProg.color}33;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:13px;">
+      <span style="font-size:22px;">${selProg.icon}</span>
+      <div>
+        <div class="orb" style="font-size:14px;color:${selProg.color};font-weight:700;">${selProg.label}</div>
+        <div style="font-size:11px;color:#ffffff33;">${currentDay}${currentDay===today?" — AUJOURD'HUI":""}</div>
+      </div>
+    </div>`;
+
+  if(!selProg.exercises.length){
+    seanceHTML+=`<div style="text-align:center;padding:22px 0;color:#ffffff33;font-size:14px;">💤 Récupération</div>`;
+  } else {
+    selProg.exercises.forEach((ex,i)=>{
+      const done=currentDay===today?!!(selSess[ex.name]):false;
+      const pr=prSet(ex.name);
+      const sets=currentDay===today?todaySetsFor(ex.name):[];
+      const next=currentDay===today?nextReco(ex.name,ex.reps):null;
+      const vol=sets.reduce((s,e)=>s+e.weight*(e.reps||1),0);
+      const exKey=ex.name.replace(/[^a-zA-Z0-9]/g,"_");
+
+      seanceHTML+=`<div class="ex-row" style="border:1px solid ${done?selProg.color+"55":"#ffffff0f"};background:${done?`rgba(${selProg.craw},.06)`:"#ffffff04"};">
+        <div class="ex-head" onclick="${currentDay===today?`toggleEx('${ex.name.replace(/'/g,"\\'")}')`:""}" style="${currentDay!==today?"cursor:default":""}">
+          <div class="ex-check" style="${done?`border-color:${selProg.color};background:${selProg.color};color:#000;`:"border-color:#ffffff2a;color:#ffffff2a;"}">${done?"✓":i+1}</div>
+          <div style="flex:1;">
+            <div style="font-weight:700;color:#fff;font-size:13px;">${ex.name}</div>
+            <div style="font-size:10px;color:#ffffff33;">${ex.sets}×${ex.reps} · ${ex.rl}</div>
+          </div>
+          ${pr?`<div style="text-align:right;flex-shrink:0;"><div style="font-size:8px;color:#ffd70055;font-family:'Orbitron',monospace;">🏆PR</div><div class="orb" style="font-size:11px;color:#ffd700;">${toDisp(pr.weight,u)}${uLbl(u)}${pr.reps?`×${pr.reps}`:""}</div></div>`:""}
+        </div>`;
+
+      if(sets.length){
+        seanceHTML+=`<div style="padding:0 12px 6px;">
+          <div style="display:flex;flex-wrap:wrap;">${sets.map((s,si)=>`<span class="set-badge" style="background:rgba(${selProg.craw},.12);border:1px solid rgba(${selProg.craw},.3);color:${selProg.color};">S${si+1} ${toDisp(s.weight,u)}${uLbl(u)}${s.reps?`×${s.reps}`:""}</span>`).join("")}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+            <span style="font-size:11px;color:#ffffff33;">Vol: <span style="color:#ffffffcc;">${toDisp(vol,u).toLocaleString()} ${uLbl(u)}</span></span>
+            <button style="background:none;border:none;color:#ff444455;font-size:11px;cursor:pointer;" onclick="removeLastSet('${ex.name.replace(/'/g,"\\'")}')">✕ annuler</button>
+          </div>
+        </div>`;
       }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        height: "100%",
-        width: "".concat(pct, "%"),
-        background: "linear-gradient(90deg,".concat(color, "88,").concat(color, ")"),
-        borderRadius: 3,
-        transition: "width .7s ease"
+
+      if(next&&currentDay===today){
+        seanceHTML+=`<div style="margin:0 12px 6px;padding:5px 10px;border-radius:6px;background:${next.up?"#00ff8808":"#ffffff06"};border:1px solid ${next.up?"#00ff8822":"#ffffff0a"};display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:10px;color:#ffffff44;">${next.note}</span>
+          <span class="orb" style="font-size:11px;color:${next.up?"#00ff88":"#ffffff66"};">→ ${toDisp(next.w,u)}${uLbl(u)}</span>
+        </div>`;
       }
-    }));
+
+      if(currentDay===today){
+        seanceHTML+=`<div style="display:flex;gap:6px;padding:4px 12px 10px;">
+          <button class="sm-btn" style="border:1px solid rgba(${selProg.craw},.4);background:rgba(${selProg.craw},.1);color:${selProg.color};" onclick="openChargeModal('${ex.name.replace(/'/g,"\\'")}','${ex.reps}',${ex.rest})">+ SÉRIE${sets.length?` (S${sets.length+1})`:""}</button>
+          ${ex.rest>0?`<button class="sm-btn" style="border:1px solid #ffffff15;background:#ffffff08;color:#ffffff44;" onclick="startTimer('${ex.name.replace(/'/g,"\\'")}',${ex.rest})">⏱ ${ex.rl}</button>`:""}
+        </div>`;
+      }
+      seanceHTML+="</div>";
+    });
   }
 
-  // ─── PRE-START BANNER ────────────────────────────────────────────────────
-  var PreBanner = isBeforeStart() && /*#__PURE__*/React.createElement("div", {
-    style: {
-      padding: "11px 14px",
-      borderRadius: 10,
-      background: "#0d0d18",
-      border: "1px solid #ffffff11",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 0
-    }
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 9,
-      color: "#ffffff22",
-      fontFamily: "'Orbitron',monospace",
-      letterSpacing: 3
-    }
-  }, "D\xC9MARRAGE"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Rajdhani',sans-serif",
-      fontSize: 13,
-      color: "#ffffff55",
-      marginTop: 2
-    }
-  }, "Lundi 8 juin \xB7 Premier jour salle \uD83D\uDCE6")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      textAlign: "right"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 30,
-      fontWeight: 900,
-      color: "#fff",
-      lineHeight: 1
-    }
-  }, daysToStart()), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Rajdhani',sans-serif",
-      fontSize: 10,
-      color: "#ffffff33",
-      letterSpacing: 2
-    }
-  }, "JOURS")));
+  // Session summary
+  if(currentDay===today&&totalEx>0){
+    seanceHTML+=`<div style="margin-top:11px;padding:12px;border-radius:8px;background:#ffffff06;">
+      <div class="orb" style="font-size:14px;color:${sessPct===100?"#00ff88":selProg.color};margin-bottom:${totalSets>0?8:0}px;">${sessPct===100?"SÉANCE COMPLÈTE ⚡":`${exDone}/${totalEx} exercices`}</div>
+      ${totalSets>0?`<div style="display:flex;gap:14px;">
+        <div><div style="font-size:8px;color:#ffffff33;font-family:'Orbitron',monospace;letter-spacing:2px;">SÉRIES</div><div class="orb" style="font-size:16px;color:#fff;">${totalSets}</div></div>
+        <div style="border-left:1px solid #ffffff0f;padding-left:14px;"><div style="font-size:8px;color:#ffffff33;font-family:'Orbitron',monospace;letter-spacing:2px;">VOLUME TOTAL</div><div class="orb" style="font-size:16px;color:${rk.c};">${toDisp(totalVol,u).toLocaleString()} ${uLbl(u)}</div></div>
+      </div>`:""}
+    </div>`;
+  }
+  seanceHTML+="</div>";
 
-  // ─── TIMER OVERLAY ───────────────────────────────────────────────────────
-  var TimerOverlay = timerRunning || timerSec > 0 ? /*#__PURE__*/React.createElement("div", {
-    style: {
-      position: "fixed",
-      bottom: 80,
-      left: "50%",
-      transform: "translateX(-50%)",
-      zIndex: 500,
-      background: "#0f0f1a",
-      border: "2px solid ".concat(rc),
-      borderRadius: 16,
-      padding: "14px 24px",
-      display: "flex",
-      alignItems: "center",
-      gap: 16,
-      boxShadow: "0 0 30px ".concat(rg)
-    }
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 9,
-      color: rc,
-      fontFamily: "'Orbitron',monospace",
-      letterSpacing: 2
-    }
-  }, "REPOS \u2014 ", timerEx), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 32,
-      color: timerSec <= 10 ? "#ff4444" : rc,
-      fontWeight: 900
-    }
-  }, Math.floor(timerSec / 60), ":", String(timerSec % 60).padStart(2, "0"))), /*#__PURE__*/React.createElement("button", {
-    onClick: function onClick() {
-      setTimerRunning(false);
-      setTimerSec(0);
-    },
-    style: {
-      padding: "8px 14px",
-      borderRadius: 8,
-      border: "1px solid ".concat(rc, "44"),
-      background: "transparent",
-      color: rc,
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 10,
-      cursor: "pointer"
-    }
-  }, "SKIP")) : null;
+  // ── REPAS ──
+  let repasHTML=`<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;">
+      <div><div class="card-lbl">NUTRITION — ${today.toUpperCase()}</div><div style="font-size:11px;color:#ffffff33;margin-top:2px;">Objectif ${targetCal} kcal</div></div>
+      <span class="orb" style="font-size:14px;color:${mealsDone===MEALS.length?"#00ff88":rk.c};">${mealsDone}/${MEALS.length}</span>
+    </div>
+    <div class="prog-track" style="margin-bottom:12px;"><div class="prog-bar" style="width:${Math.round(mealsDone/MEALS.length*100)}%;background:linear-gradient(90deg,${mealsDone===MEALS.length?"#00cc6688, #00ff88":`rgba(${rk.cr},.5), ${rk.c}`});"></div></div>
+    ${MEALS.map(m=>{
+      const done=!!todayMeals[m.id];
+      const missed=!done&&new Date().getHours()>m.hour+1;
+      return `<div class="meal-row" style="background:${done?"#00ff8810":missed?"#ff444408":"#ffffff06"};border:1px solid ${done?"#00ff8844":missed?"#ff444422":"#ffffff0f"};" onclick="toggleMeal('${m.id}')">
+        <span style="font-size:17px;">${m.icon}</span>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:13px;color:${done?"#fff":missed?"#ff4444aa":"#ffffffbb"};">${m.label}${missed?" ⚠️":""}</div>
+          <div style="font-size:10px;color:#ffffff33;">${m.kcal} kcal · ${m.hour}h00</div>
+        </div>
+        <div style="width:22px;height:22px;border-radius:50%;border:2px solid ${done?"#00ff88":missed?"#ff444444":"#ffffff22"};background:${done?"#00ff8820":"transparent"};display:flex;align-items:center;justify-content:center;font-size:11px;color:${done?"#00ff88":"#ffffff22"};">${done?"✓":"○"}</div>
+      </div>`;
+    }).join("")}
+  </div>
+  <div class="card">
+    <div class="card-lbl" style="margin-bottom:9px;">RÈGLES PROTOCOLE</div>
+    ${[["⚖","Poids stable 2 sem → +300 kcal/jour"],["🥛","Post-workout = repas le plus important"],["📅","Pèse-toi 2×/sem au réveil, regarde la moyenne"],["💪","Top reps sur toutes séries → augmente la charge"],["😴","7-9h sommeil pour construire du muscle"]].map(([ic,r])=>`<div style="display:flex;gap:9px;padding:7px 0;border-bottom:1px solid #ffffff08;"><span style="flex-shrink:0;">${ic}</span><span style="color:#ffffff55;font-size:12px;line-height:1.5;">${r}</span></div>`).join("")}
+  </div>
+  <button class="act-btn" style="border:1px solid ${rk.c}77;background:rgba(${rk.cr},.1);color:${rk.c};" onclick="openModal('cal')">🔥 LOGGER LES CALORIES</button>`;
 
-  // ─── TABS ────────────────────────────────────────────────────────────────
-  var TABS = [["dashboard", "⬡", "DASH"], ["today", "⚔", "SÉANCE"], ["meals", "🍖", "REPAS"], ["history", "📋", "HISTO"], ["progress", "📈", "STATS"]];
+  // ── HISTORIQUE ──
+  let histHTML=`<div class="card">
+    <div class="card-lbl" style="margin-bottom:10px;">HISTORIQUE PAR EXERCICE</div>`;
+  ALL_EX.forEach(ex=>{
+    const lc=lastSet(ex);
+    const pr=prSet(ex);
+    const hist=S.charges[ex]||[];
+    const open=histEx===ex;
+    histHTML+=`<div onclick="toggleHistEx('${ex.replace(/'/g,"\\'")}')">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 11px;border-radius:8px;background:${open?`rgba(${rk.cr},.08)`:"#ffffff06"};border:1px solid ${open?rk.c+"44":"#ffffff0a"};margin-bottom:5px;cursor:pointer;">
+        <div><div style="font-weight:600;color:#fff;font-size:13px;">${ex}</div><div style="font-size:10px;color:#ffffff33;">${hist.length} entrées</div></div>
+        <div style="text-align:right;">
+          ${lc?`<div class="orb" style="font-size:11px;color:#ffffffcc;">${toDisp(lc.weight,u)}${uLbl(u)}${lc.reps?`×${lc.reps}`:""}</div>`:""}
+          ${pr?`<div class="orb" style="font-size:9px;color:#ffd700;">🏆 ${toDisp(pr.weight,u)}${uLbl(u)}${pr.reps?`×${pr.reps}`:""}</div>`:""}
+        </div>
+      </div>
+      ${open&&hist.length?`<div style="padding:0 4px 8px;">
+        <div style="display:flex;align-items:flex-end;gap:2px;height:44px;margin-bottom:7px;">
+          ${hist.slice(-20).map((e,i,arr)=>{const mn=Math.min(...arr.map(x=>x.weight));const mx=Math.max(...arr.map(x=>x.weight));const rng=mx-mn||.5;const h=Math.max(6,((e.weight-mn)/rng)*36+6);const last=i===arr.length-1;return`<div class="chart-bar" style="flex:1;height:${h}px;background:${last?`linear-gradient(0deg,${rk.c}88,${rk.c})`:`rgba(${rk.cr},.25)`};"></div>`;}).join("")}
+        </div>
+        ${hist.slice(-6).reverse().map(e=>`<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #ffffff06;font-size:11px;"><span style="color:#ffffff44;">${e.date}</span><span class="orb" style="font-size:11px;color:#fff;">${toDisp(e.weight,u)}${uLbl(u)}${e.reps?` × ${e.reps} reps`:""}</span></div>`).join("")}
+      </div>`:""}
+    </div>`;
+  });
+  histHTML+="</div>";
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  return /*#__PURE__*/React.createElement("div", {
-    style: S.root
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      position: "fixed",
-      inset: 0,
-      pointerEvents: "none",
-      zIndex: 0
-    }
-  }, particles.map(function (p) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: p.id,
-      style: {
-        position: "absolute",
-        left: "".concat(p.x, "%"),
-        top: "".concat(p.y, "%"),
-        width: p.s,
-        height: p.s,
-        borderRadius: "50%",
-        background: rc,
-        opacity: .1,
-        animation: "floatP ".concat(p.sp, "s ").concat(p.d, "s infinite alternate ease-in-out")
-      }
-    });
-  })), /*#__PURE__*/React.createElement("style", null, "\n        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');\n        *{box-sizing:border-box;margin:0;padding:0;}\n        ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:#0a0a0f;}::-webkit-scrollbar-thumb{background:".concat(rc, "44;border-radius:2px;}\n        @keyframes floatP{from{transform:translateY(0) scale(1);}to{transform:translateY(-18px) scale(1.3);}}\n        @keyframes pulse{0%,100%{box-shadow:0 0 12px ").concat(rg, ";}50%{box-shadow:0 0 30px ").concat(rg, ",0 0 55px ").concat(rg, ";}}\n        @keyframes scan{0%{transform:translateY(-100%);}100%{transform:translateY(100vh);}}\n        @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}\n        .btn{transition:all .15s;cursor:pointer;}.btn:hover{opacity:.8;transform:scale(.97);}\n        .row{transition:all .2s;cursor:pointer;}.row:hover{background:#ffffff0a!important;transform:translateX(3px);}\n        .dBtn{transition:all .15s;cursor:pointer;}.dBtn:hover{border-color:").concat(rc, "!important;}\n        input[type=number]{-moz-appearance:textfield;}input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}\n      ")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      position: "fixed",
-      top: 0,
-      left: 0,
-      right: 0,
-      height: "2px",
-      background: "linear-gradient(90deg,transparent,".concat(rc, "44,transparent)"),
-      animation: "scan 8s linear infinite",
-      pointerEvents: "none",
-      zIndex: 999
-    }
-  }), TimerOverlay, /*#__PURE__*/React.createElement("div", {
-    style: S.wrap
-  }, /*#__PURE__*/React.createElement("div", {
-    style: S.header
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 9,
-      color: rc,
-      letterSpacing: 4,
-      marginBottom: 3
-    }
-  }, "HUNTER BODY PROTOCOL"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 19,
-      color: "#fff",
-      fontWeight: 900,
-      letterSpacing: 2
-    }
-  }, "JEREMIE"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Rajdhani',sans-serif",
-      fontSize: 11,
-      color: "#ffffff44",
-      marginTop: 2
-    }
-  }, data.heightCm, "cm \xB7 BMI ", bmi(data.currentWeight, data.heightCm), " \xB7 TDEE ~", myTdee, " kcal")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "flex-end",
-      gap: 6
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: _objectSpread(_objectSpread({}, S.rankBadge), {}, {
-      borderColor: rc,
-      animation: "pulse 3s infinite"
-    })
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 28,
-      fontWeight: 900,
-      color: rc
-    }
-  }, rank), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 8,
-      color: "#ffffff44",
-      fontFamily: "'Rajdhani',sans-serif",
-      letterSpacing: 2
-    }
-  }, "RANK")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 6
-    }
-  }, /*#__PURE__*/React.createElement("button", {
-    className: "btn",
-    onClick: function onClick() {
-      return setData(function (d) {
-        return _objectSpread(_objectSpread({}, d), {}, {
-          unit: d.unit === "kg" ? "lbs" : "kg"
-        });
-      });
-    },
-    style: {
-      padding: "3px 9px",
-      borderRadius: 5,
-      border: "1px solid ".concat(rc, "55"),
-      background: "".concat(rc, "15"),
-      color: rc,
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 9,
-      letterSpacing: 1
-    }
-  }, u.toUpperCase(), " \u21C4"), /*#__PURE__*/React.createElement("button", {
-    className: "btn",
-    onClick: toggleNotif,
-    style: {
-      padding: "3px 9px",
-      borderRadius: 5,
-      border: "1px solid ".concat(data.notifEnabled ? "#00ff8855" : "#ffffff22"),
-      background: data.notifEnabled ? "#00ff8815" : "#ffffff08",
-      color: data.notifEnabled ? "#00ff88" : "#ffffff44",
-      fontSize: 13
-    }
-  }, "\uD83D\uDD14")))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 5,
-      marginBottom: 13
-    }
-  }, TABS.map(function (_ref3) {
-    var _ref4 = _slicedToArray(_ref3, 3),
-      id = _ref4[0],
-      icon = _ref4[1],
-      label = _ref4[2];
-    return /*#__PURE__*/React.createElement("button", {
-      key: id,
-      className: "btn",
-      onClick: function onClick() {
-        return setTab(id);
-      },
-      style: {
-        flex: 1,
-        padding: "8px 2px",
-        borderRadius: 8,
-        border: "1px solid ".concat(tab === id ? rc : "#ffffff15"),
-        background: tab === id ? "".concat(rc, "18") : "#ffffff06",
-        color: tab === id ? rc : "#ffffff44",
-        fontFamily: "'Rajdhani',sans-serif",
-        fontSize: 10,
-        fontWeight: 700,
-        letterSpacing: .5,
-        cursor: "pointer"
-      }
-    }, /*#__PURE__*/React.createElement("div", null, icon), /*#__PURE__*/React.createElement("div", null, label));
-  })), tab === "dashboard" && /*#__PURE__*/React.createElement("div", {
-    style: S.col,
-    className: "fadeIn"
-  }, PreBanner, needsDeload && /*#__PURE__*/React.createElement("div", {
-    style: {
-      padding: "11px 14px",
-      borderRadius: 10,
-      background: "#ffaa0010",
-      border: "1px solid #ffaa0044",
-      fontFamily: "'Rajdhani',sans-serif",
-      fontSize: 13,
-      color: "#ffaa00"
-    }
-  }, "\u26A0\uFE0F Semaine ", weekNumber, " \u2014 C'est ta semaine de ", /*#__PURE__*/React.createElement("b", null, "d\xE9charge"), ". R\xE9duis les charges de 40-50%, r\xE9cup\xE8re."), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: 9
-    }
-  }, /*#__PURE__*/React.createElement(StatCard, {
-    label: "POIDS ACTUEL",
-    value: "".concat(toDisp(data.currentWeight, u), " ").concat(uLabel(u)),
-    sub: "D\xE9part: ".concat(toDisp(57, u), " ").concat(uLabel(u))
-  }), /*#__PURE__*/React.createElement(StatCard, {
-    label: "OBJECTIF",
-    value: "".concat(toDisp(data.targetWeight, u), " ").concat(uLabel(u)),
-    sub: "".concat(toDisp(Math.max(0, data.targetWeight - data.currentWeight), u), " ").concat(uLabel(u), " restants")
-  }), /*#__PURE__*/React.createElement(StatCard, {
-    label: "STREAK",
-    value: "".concat(streak, "j"),
-    sub: "s\xE9ances cons\xE9c."
-  }), /*#__PURE__*/React.createElement(StatCard, {
-    label: "~SEMAINES",
-    value: "".concat(wl),
-    sub: "avant objectif"
-  })), /*#__PURE__*/React.createElement("div", {
-    style: S.card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      marginBottom: 8
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: S.cardLbl
-  }, "PROGRESSION RANG ", rank), /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: rc,
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 12
-    }
-  }, progPct.toFixed(1), "%")), /*#__PURE__*/React.createElement(ProgBar, {
-    pct: progPct,
-    color: rc,
-    height: 6
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      marginTop: 6,
-      fontFamily: "'Rajdhani',sans-serif",
-      fontSize: 10,
-      color: "#ffffff33"
-    }
-  }, /*#__PURE__*/React.createElement("span", null, toDisp(57, u), " ", uLabel(u)), /*#__PURE__*/React.createElement("span", null, toDisp(data.targetWeight, u), " ", uLabel(u))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 5,
-      marginTop: 10
-    }
-  }, ["E", "D", "C", "B", "A", "S"].map(function (r, i) {
-    var active = i <= ["E", "D", "C", "B", "A", "S"].indexOf(rank);
-    return /*#__PURE__*/React.createElement("div", {
-      key: r,
-      style: {
-        flex: 1,
-        textAlign: "center",
-        padding: "3px 0",
-        borderRadius: 4,
-        background: active ? "".concat(rc, "22") : "#ffffff08",
-        border: "1px solid ".concat(active ? rc : "#ffffff11"),
-        fontFamily: "'Orbitron',monospace",
-        fontSize: 10,
-        color: active ? rc : "#ffffff22"
-      }
-    }, r);
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: S.card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 8
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: S.cardLbl
-  }, "CALORIES DU JOUR"), /*#__PURE__*/React.createElement("button", {
-    className: "btn",
-    onClick: function onClick() {
-      return setModal("cal");
-    },
-    style: S.smBtn(rc)
-  }, "+ LOG")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 10,
-      alignItems: "baseline",
-      marginBottom: 7
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 22,
-      color: todayCal >= targetCal ? "#00ff88" : "#fff"
-    }
-  }, todayCal || "—"), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: "'Rajdhani',sans-serif",
-      fontSize: 12,
-      color: "#ffffff33"
-    }
-  }, "/ ", targetCal, " kcal")), /*#__PURE__*/React.createElement(ProgBar, {
-    pct: calPct,
-    color: calPct >= 100 ? "#00ff88" : rc
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: 5,
-      fontFamily: "'Rajdhani',sans-serif",
-      fontSize: 11,
-      color: "#ffffff33"
-    }
-  }, "TDEE ", myTdee, " + 400 surplus")), /*#__PURE__*/React.createElement("div", {
-    style: S.card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 12
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 28
-    }
-  }, todayProg.icon), /*#__PURE__*/React.createElement("div", {
-    style: {
-      flex: 1
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: S.cardLbl
-  }, today.toUpperCase()), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 14,
-      color: todayProg.color,
-      fontWeight: 700,
-      marginTop: 3
-    }
-  }, todayProg.label), totalEx > 0 && /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Rajdhani',sans-serif",
-      fontSize: 12,
-      color: "#ffffff66",
-      marginTop: 2
-    }
-  }, exDone, "/", totalEx, " exos \xB7 Vol: ", toDisp(totalVolKg, u).toLocaleString(), " ", uLabel(u))), totalEx > 0 && /*#__PURE__*/React.createElement("div", {
-    style: {
-      position: "relative",
-      width: 46,
-      height: 46,
-      flexShrink: 0
-    }
-  }, /*#__PURE__*/React.createElement("svg", {
-    width: "46",
-    height: "46"
-  }, /*#__PURE__*/React.createElement("circle", {
-    cx: "23",
-    cy: "23",
-    r: "19",
-    fill: "none",
-    stroke: "".concat(todayProg.color, "22"),
-    strokeWidth: "3"
-  }), /*#__PURE__*/React.createElement("circle", {
-    cx: "23",
-    cy: "23",
-    r: "19",
-    fill: "none",
-    stroke: todayProg.color,
-    strokeWidth: "3",
-    strokeDasharray: "".concat(sessPct * 1.194, " 119.4"),
-    strokeLinecap: "round",
-    transform: "rotate(-90 23 23)"
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      position: "absolute",
-      inset: 0,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 9,
-      color: todayProg.color
-    }
-  }, sessPct, "%"))), todayNote && /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: 10,
-      padding: "8px 10px",
-      borderRadius: 7,
-      background: "#ffffff06",
-      fontFamily: "'Rajdhani',sans-serif",
-      fontSize: 12,
-      color: "#ffffff66",
-      borderLeft: "2px solid ".concat(rc, "44")
-    }
-  }, "\uD83D\uDCDD ", todayNote)), /*#__PURE__*/React.createElement("div", {
-    style: S.card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 8
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: S.cardLbl
-  }, "REPAS"), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 12,
-      color: mealsDone === MEALS.length ? "#00ff88" : rc
-    }
-  }, mealsDone, "/", MEALS.length)), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 5
-    }
-  }, MEALS.map(function (m) {
-    var done = !!todayMeals[m.id];
-    return /*#__PURE__*/React.createElement("div", {
-      key: m.id,
-      style: {
-        flex: 1,
-        textAlign: "center",
-        padding: "4px 0",
-        borderRadius: 5,
-        background: done ? "#00ff8820" : "#ffffff08",
-        border: "1px solid ".concat(done ? "#00ff8844" : "#ffffff0f"),
-        fontSize: 14
-      }
-    }, m.icon);
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: 9
-    }
-  }, /*#__PURE__*/React.createElement("button", {
-    className: "btn",
-    onClick: function onClick() {
-      return setModal("weight");
-    },
-    style: S.actionBtn(rc)
-  }, "\u2696 POIDS"), /*#__PURE__*/React.createElement("button", {
-    className: "btn",
-    onClick: function onClick() {
-      return setModal("measure");
-    },
-    style: S.actionBtn("#ffffff44", "#ffffff08", "#ffffff11")
-  }, "\uD83D\uDCCF MENSUR."), /*#__PURE__*/React.createElement("button", {
-    className: "btn",
-    onClick: function onClick() {
-      setNoteText(todayNote);
-      setModal("note");
-    },
-    style: S.actionBtn("#ffffff44", "#ffffff08", "#ffffff11")
-  }, "\uD83D\uDCDD NOTE S\xC9ANCE"), /*#__PURE__*/React.createElement("button", {
-    className: "btn",
-    onClick: function onClick() {
-      return setTab("history");
-    },
-    style: S.actionBtn("#ffffff44", "#ffffff08", "#ffffff11")
-  }, "\uD83D\uDCCB HISTORIQUE"))), tab === "today" && /*#__PURE__*/React.createElement("div", {
-    style: S.col
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 5,
-      flexWrap: "wrap",
-      alignItems: "center"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 5,
-      flex: 1,
-      flexWrap: "wrap"
-    }
-  }, DAYS.map(function (d) {
-    return /*#__PURE__*/React.createElement("button", {
-      key: d,
-      className: "dBtn",
-      onClick: function onClick() {
-        return setSelDay(d);
-      },
-      style: {
-        padding: "5px 10px",
-        borderRadius: 6,
-        border: "1px solid ".concat(selDay === d ? PROGRAM[d].color : "#ffffff1a"),
-        background: selDay === d ? "".concat(PROGRAM[d].color, "20") : "#ffffff08",
-        color: selDay === d ? PROGRAM[d].color : "#ffffff55",
-        fontFamily: "'Rajdhani',sans-serif",
-        fontSize: 11,
-        fontWeight: 600
-      }
-    }, d === today ? "\u2605".concat(d.slice(0, 2)) : d.slice(0, 2));
-  })), /*#__PURE__*/React.createElement("button", {
-    className: "btn",
-    onClick: function onClick() {
-      return setData(function (d) {
-        return _objectSpread(_objectSpread({}, d), {}, {
-          unit: d.unit === "kg" ? "lbs" : "kg"
-        });
-      });
-    },
-    style: {
-      padding: "5px 10px",
-      borderRadius: 6,
-      border: "1px solid ".concat(rc, "55"),
-      background: "".concat(rc, "15"),
-      color: rc,
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 9,
-      flexShrink: 0
-    }
-  }, u.toUpperCase(), " \u21C4")), selDay === today && /*#__PURE__*/React.createElement("button", {
-    className: "btn",
-    onClick: function onClick() {
-      setNoteText(todayNote);
-      setModal("note");
-    },
-    style: _objectSpread(_objectSpread({}, S.actionBtn("#ffffff44", "#ffffff08", "#ffffff11")), {}, {
-      width: "100%",
-      padding: "9px"
-    })
-  }, "\uD83D\uDCDD ", todayNote ? "Modifier la note" : "Ajouter une note de séance"), /*#__PURE__*/React.createElement("div", {
-    style: _objectSpread(_objectSpread({}, S.card), {}, {
-      borderColor: "".concat(PROGRAM[selDay].color, "33")
-    })
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 10,
-      marginBottom: 14
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 24
-    }
-  }, PROGRAM[selDay].icon), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 15,
-      color: PROGRAM[selDay].color,
-      fontWeight: 700
-    }
-  }, PROGRAM[selDay].label), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Rajdhani',sans-serif",
-      fontSize: 11,
-      color: "#ffffff44"
-    }
-  }, selDay, selDay === today ? " — AUJOURD'HUI" : ""))), PROGRAM[selDay].exercises.length === 0 ? /*#__PURE__*/React.createElement("div", {
-    style: {
-      textAlign: "center",
-      padding: "24px 0",
-      color: "#ffffff33",
-      fontFamily: "'Rajdhani',sans-serif"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 32
-    }
-  }, "\uD83D\uDCA4"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: 6
-    }
-  }, "R\xE9cup\xE9ration")) : /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 8
-    }
-  }, PROGRAM[selDay].exercises.map(function (ex, i) {
-    var done = selDay === today ? !!(data.sessions[dk] || {})[ex.name] : false;
-    var pr = prSet(ex.name);
-    var sets = todaySetsFor(ex.name);
-    var next = nextReco(ex.name, ex.reps);
-    var vol = sets.reduce(function (s, e) {
-      return s + e.weight * (e.reps || 1);
-    }, 0);
-    var col = PROGRAM[selDay].color;
-    return /*#__PURE__*/React.createElement("div", {
-      key: ex.name,
-      style: {
-        borderRadius: 8,
-        border: "1px solid ".concat(done ? col + "55" : "#ffffff0f"),
-        background: done ? "".concat(col, "0d") : "#ffffff04",
-        overflow: "hidden"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "row",
-      onClick: function onClick() {
-        return selDay === today && save(function (d) {
-          return {
-            sessions: _objectSpread(_objectSpread({}, d.sessions), {}, _defineProperty({}, dk, _objectSpread(_objectSpread({}, d.sessions[dk] || {}), {}, _defineProperty({}, ex.name, !(d.sessions[dk] || {})[ex.name]))))
-          };
-        });
-      },
-      style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 9,
-        padding: "10px 12px"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        width: 21,
-        height: 21,
-        borderRadius: 5,
-        border: "2px solid ".concat(done ? col : "#ffffff2a"),
-        background: done ? col : "transparent",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: 10,
-        color: done ? "#000" : "#ffffff2a",
-        flexShrink: 0
-      }
-    }, done ? "✓" : i + 1), /*#__PURE__*/React.createElement("div", {
-      style: {
-        flex: 1
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: "'Rajdhani',sans-serif",
-        fontWeight: 600,
-        color: "#fff",
-        fontSize: 13
-      }
-    }, ex.name), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: "#ffffff33",
-        fontFamily: "'Rajdhani',sans-serif"
-      }
-    }, ex.sets, "\xD7", ex.reps, " \xB7 ", ex.restLabel)), pr && /*#__PURE__*/React.createElement("div", {
-      style: {
-        textAlign: "right",
-        flexShrink: 0
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 8,
-        color: "#ffd70055",
-        fontFamily: "'Orbitron',monospace"
-      }
-    }, "\uD83C\uDFC6PR"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: "'Orbitron',monospace",
-        fontSize: 11,
-        color: "#ffd700"
-      }
-    }, toDisp(pr.weight, u), uLabel(u), pr.reps ? "\xD7".concat(pr.reps) : ""))), sets.length > 0 && /*#__PURE__*/React.createElement("div", {
-      style: {
-        padding: "0 12px 6px"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        flexWrap: "wrap",
-        gap: 4,
-        marginBottom: 4
-      }
-    }, sets.map(function (s, si) {
-      return /*#__PURE__*/React.createElement("div", {
-        key: si,
-        style: {
-          padding: "3px 7px",
-          borderRadius: 4,
-          background: "".concat(col, "1a"),
-          border: "1px solid ".concat(col, "33"),
-          fontFamily: "'Orbitron',monospace",
-          fontSize: 9,
-          color: col
-        }
-      }, "S", si + 1, " ", toDisp(s.weight, u), uLabel(u), s.reps ? "\xD7".concat(s.reps) : "");
-    })), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center"
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: "'Rajdhani',sans-serif",
-        fontSize: 11,
-        color: "#ffffff33"
-      }
-    }, "Vol: ", /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: "#ffffffcc"
-      }
-    }, toDisp(vol, u).toLocaleString(), " ", uLabel(u))), /*#__PURE__*/React.createElement("button", {
-      onClick: function onClick() {
-        return removeLastSet(ex.name);
-      },
-      style: {
-        background: "none",
-        border: "none",
-        color: "#ff444455",
-        cursor: "pointer",
-        fontSize: 11,
-        fontFamily: "'Rajdhani',sans-serif"
-      }
-    }, "\u2715 annuler"))), next && selDay === today && /*#__PURE__*/React.createElement("div", {
-      style: {
-        margin: "0 12px 6px",
-        padding: "6px 10px",
-        borderRadius: 6,
-        background: next.up ? "#00ff8808" : "#ffffff06",
-        border: "1px solid ".concat(next.up ? "#00ff8822" : "#ffffff0a"),
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center"
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 10,
-        color: "#ffffff44",
-        fontFamily: "'Rajdhani',sans-serif"
-      }
-    }, next.note), /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: "'Orbitron',monospace",
-        fontSize: 11,
-        color: next.up ? "#00ff88" : "#ffffff66"
-      }
-    }, "\u2192 ", toDisp(next.weight, u), uLabel(u))), selDay === today && !ex.cardioOnly && /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        gap: 6,
-        padding: "4px 12px 10px"
-      }
-    }, /*#__PURE__*/React.createElement("button", {
-      className: "btn",
-      onClick: function onClick() {
-        return setChargeModal(ex.name);
-      },
-      style: S.smBtn(col)
-    }, "+ S\xC9RIE ", sets.length > 0 ? "(S".concat(sets.length + 1, ")") : ""), ex.rest > 0 && /*#__PURE__*/React.createElement("button", {
-      className: "btn",
-      onClick: function onClick() {
-        return startTimer(ex.name, ex.rest);
-      },
-      style: {
-        padding: "4px 10px",
-        borderRadius: 5,
-        border: "1px solid #ffffff1a",
-        background: "#ffffff08",
-        color: "#ffffff55",
-        fontFamily: "'Orbitron',monospace",
-        fontSize: 9,
-        cursor: "pointer"
-      }
-    }, "\u23F1 ", ex.restLabel)));
-  })), selDay === today && totalEx > 0 && /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: 12,
-      padding: "12px",
-      borderRadius: 8,
-      background: "#ffffff06"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 15,
-      color: sessPct === 100 ? "#00ff88" : PROGRAM[selDay].color,
-      marginBottom: totalSetsToday > 0 ? 8 : 0
-    }
-  }, sessPct === 100 ? "SÉANCE COMPLÈTE ⚡" : "".concat(exDone, "/").concat(totalEx, " exercices")), totalSetsToday > 0 && /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 14
-    }
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 8,
-      color: "#ffffff33",
-      fontFamily: "'Orbitron',monospace",
-      letterSpacing: 2
-    }
-  }, "S\xC9RIES"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 16,
-      color: "#fff"
-    }
-  }, totalSetsToday)), /*#__PURE__*/React.createElement("div", {
-    style: {
-      borderLeft: "1px solid #ffffff0f",
-      paddingLeft: 14
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 8,
-      color: "#ffffff33",
-      fontFamily: "'Orbitron',monospace",
-      letterSpacing: 2
-    }
-  }, "VOLUME TOTAL"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 16,
-      color: rc
-    }
-  }, toDisp(totalVolKg, u).toLocaleString(), " ", uLabel(u))))))), tab === "meals" && /*#__PURE__*/React.createElement("div", {
-    style: S.col
-  }, /*#__PURE__*/React.createElement("div", {
-    style: S.card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 10
-    }
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: S.cardLbl
-  }, "NUTRITION \u2014 ", today.toUpperCase()), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Rajdhani',sans-serif",
-      fontSize: 11,
-      color: "#ffffff33",
-      marginTop: 2
-    }
-  }, "Objectif ", targetCal, " kcal \xB7 TDEE ", myTdee, "+400")), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 14,
-      color: mealsDone === MEALS.length ? "#00ff88" : rc
-    }
-  }, mealsDone, "/", MEALS.length)), /*#__PURE__*/React.createElement(ProgBar, {
-    pct: Math.round(mealsDone / MEALS.length * 100),
-    color: mealsDone === MEALS.length ? "#00ff88" : rc
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 7,
-      marginTop: 12
-    }
-  }, MEALS.map(function (m) {
-    var done = !!todayMeals[m.id];
-    var now = new Date().getHours();
-    var missed = !done && now > m.hour + 1;
-    return /*#__PURE__*/React.createElement("div", {
-      key: m.id,
-      className: "row",
-      onClick: function onClick() {
-        return save(function (d) {
-          return {
-            meals: _objectSpread(_objectSpread({}, d.meals), {}, _defineProperty({}, dk, _objectSpread(_objectSpread({}, d.meals[dk] || {}), {}, _defineProperty({}, m.id, !(d.meals[dk] || {})[m.id]))))
-          };
-        });
-      },
-      style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 11,
-        padding: "12px 13px",
-        borderRadius: 8,
-        background: done ? "#00ff8810" : missed ? "#ff444408" : "#ffffff06",
-        border: "1px solid ".concat(done ? "#00ff8844" : missed ? "#ff444422" : "#ffffff0f")
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 17
-      }
-    }, m.icon), /*#__PURE__*/React.createElement("div", {
-      style: {
-        flex: 1
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: "'Rajdhani',sans-serif",
-        fontWeight: 600,
-        fontSize: 13,
-        color: done ? "#fff" : missed ? "#ff4444aa" : "#ffffffbb"
-      }
-    }, m.label, missed ? " ⚠️" : ""), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: "#ffffff33",
-        fontFamily: "'Rajdhani',sans-serif"
-      }
-    }, m.kcal, " kcal \xB7 ", m.hour, "h00")), /*#__PURE__*/React.createElement("div", {
-      style: {
-        width: 22,
-        height: 22,
-        borderRadius: "50%",
-        border: "2px solid ".concat(done ? "#00ff88" : missed ? "#ff444444" : "#ffffff22"),
-        background: done ? "#00ff8820" : "transparent",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: 11,
-        color: done ? "#00ff88" : "#ffffff22"
-      }
-    }, done ? "✓" : "○"));
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: S.card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: S.cardLbl
-  }, "R\xC8GLES PROTOCOLE"), [["⚖", "Poids stable 2 sem → +300 kcal/jour"], ["🥛", "Post-workout = repas le plus important"], ["📅", "Pèse-toi 2×/sem au réveil, regarde la moyenne"], ["💪", "Toutes les séries top → augmente la charge"], ["😴", "7-9h de sommeil pour construire du muscle"]].map(function (_ref5) {
-    var _ref6 = _slicedToArray(_ref5, 2),
-      ic = _ref6[0],
-      r = _ref6[1];
-    return /*#__PURE__*/React.createElement("div", {
-      key: r,
-      style: {
-        display: "flex",
-        gap: 9,
-        padding: "8px 0",
-        borderBottom: "1px solid #ffffff08"
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        flexShrink: 0
-      }
-    }, ic), /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: "#ffffff66",
-        fontFamily: "'Rajdhani',sans-serif",
-        fontSize: 12,
-        lineHeight: 1.5
-      }
-    }, r));
-  })), /*#__PURE__*/React.createElement("button", {
-    className: "btn",
-    onClick: function onClick() {
-      return setModal("cal");
-    },
-    style: S.actionBtn(rc)
-  }, "\uD83D\uDD25 LOGGER LES CALORIES DU JOUR")), tab === "history" && /*#__PURE__*/React.createElement("div", {
-    style: S.col
-  }, /*#__PURE__*/React.createElement("div", {
-    style: S.card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: S.cardLbl
-  }, "HISTORIQUE PAR EXERCICE"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 6,
-      marginTop: 10
-    }
-  }, _toConsumableArray(new Set(Object.values(PROGRAM).flatMap(function (d) {
-    return d.exercises.map(function (e) {
-      return e.name;
-    });
-  }))).map(function (ex) {
-    var lc = lastSet(ex);
-    var pr = prSet(ex);
-    var hist = allSets(ex);
-    return /*#__PURE__*/React.createElement("div", {
-      key: ex,
-      className: "row",
-      onClick: function onClick() {
-        return setHistEx(histEx === ex ? null : ex);
-      },
-      style: {
-        padding: "10px 12px",
-        borderRadius: 8,
-        background: histEx === ex ? "".concat(rc, "12") : "#ffffff06",
-        border: "1px solid ".concat(histEx === ex ? rc + "44" : "#ffffff0f")
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center"
-      }
-    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: "'Rajdhani',sans-serif",
-        fontWeight: 600,
-        color: "#fff",
-        fontSize: 13
-      }
-    }, ex), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: "#ffffff33",
-        fontFamily: "'Rajdhani',sans-serif"
-      }
-    }, hist.length, " entr\xE9es")), /*#__PURE__*/React.createElement("div", {
-      style: {
-        textAlign: "right"
-      }
-    }, lc && /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: "'Orbitron',monospace",
-        fontSize: 11,
-        color: "#ffffffcc"
-      }
-    }, toDisp(lc.weight, u), uLabel(u), lc.reps ? "\xD7".concat(lc.reps) : ""), pr && /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 9,
-        color: "#ffd700",
-        fontFamily: "'Orbitron',monospace"
-      }
-    }, "\uD83C\uDFC6 ", toDisp(pr.weight, u), uLabel(u), pr.reps ? "\xD7".concat(pr.reps) : ""))), histEx === ex && hist.length > 0 && /*#__PURE__*/React.createElement("div", {
-      style: {
-        marginTop: 10,
-        borderTop: "1px solid #ffffff0a",
-        paddingTop: 10
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        alignItems: "flex-end",
-        gap: 2,
-        height: 50,
-        marginBottom: 8
-      }
-    }, hist.slice(-20).map(function (e, i) {
-      var arr = hist.slice(-20);
-      var mn = Math.min.apply(Math, _toConsumableArray(arr.map(function (x) {
-        return x.weight;
-      })));
-      var mx = Math.max.apply(Math, _toConsumableArray(arr.map(function (x) {
-        return x.weight;
-      })));
-      var rng = mx - mn || 0.5;
-      var h = Math.max(8, (e.weight - mn) / rng * 42 + 8);
-      return /*#__PURE__*/React.createElement("div", {
-        key: i,
-        style: {
-          flex: 1,
-          height: h,
-          background: i === arr.length - 1 ? "linear-gradient(0deg,".concat(rc, "88,").concat(rc, ")") : "linear-gradient(0deg,".concat(rc, "22,").concat(rc, "44)"),
-          borderRadius: "2px 2px 0 0",
-          marginTop: "auto"
-        }
-      });
-    })), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        flexDirection: "column",
-        gap: 4
-      }
-    }, hist.slice(-8).reverse().map(function (e, i) {
-      return /*#__PURE__*/React.createElement("div", {
-        key: i,
-        style: {
-          display: "flex",
-          justifyContent: "space-between",
-          fontFamily: "'Rajdhani',sans-serif",
-          fontSize: 11,
-          color: "#ffffff66",
-          padding: "3px 0",
-          borderBottom: "1px solid #ffffff06"
-        }
-      }, /*#__PURE__*/React.createElement("span", null, e.date), /*#__PURE__*/React.createElement("span", {
-        style: {
-          color: "#fff",
-          fontFamily: "'Orbitron',monospace",
-          fontSize: 11
-        }
-      }, toDisp(e.weight, u), uLabel(u), e.reps ? " \xD7 ".concat(e.reps, " reps") : ""));
-    }))));
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: S.card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: S.cardLbl
-  }, "JOURNAL DES S\xC9ANCES"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 6,
-      marginTop: 10
-    }
-  }, Object.entries(data.sessions).sort(function (a, b) {
-    return b[0].localeCompare(a[0]);
-  }).slice(0, 14).map(function (_ref7) {
-    var _ref8 = _slicedToArray(_ref7, 2),
-      date = _ref8[0],
-      sess = _ref8[1];
-    var doneCnt = Object.values(sess).filter(Boolean).length;
-    var dn = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"][new Date(date + "T12:00:00").getDay()];
-    var prog = PROGRAM[dn];
-    var pct = prog.exercises.length ? Math.round(doneCnt / prog.exercises.length * 100) : 0;
-    var vol = data.sessionLogs[date] || {};
-    var volKg = Object.values(vol).flat().reduce(function (s, e) {
-      return s + e.weight * (e.reps || 1);
-    }, 0);
-    var note = data.sessionNotes[date];
-    return /*#__PURE__*/React.createElement("div", {
-      key: date,
-      style: {
-        padding: "10px 12px",
-        borderRadius: 8,
-        background: "#ffffff06",
-        border: "1px solid #ffffff0a"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center"
-      }
-    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: "'Rajdhani',sans-serif",
-        fontWeight: 600,
-        fontSize: 13,
-        color: "#fff"
-      }
-    }, dn, " ", /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: "#ffffff44",
-        fontWeight: 400
-      }
-    }, date)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: prog.color,
-        fontFamily: "'Orbitron',monospace",
-        marginTop: 2
-      }
-    }, prog.label)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        textAlign: "right"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: "'Orbitron',monospace",
-        fontSize: 13,
-        color: pct === 100 ? "#00ff88" : rc
-      }
-    }, pct, "%"), volKg > 0 && /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: "#ffffff44",
-        fontFamily: "'Rajdhani',sans-serif"
-      }
-    }, toDisp(volKg, u).toLocaleString(), " ", uLabel(u)))), note && /*#__PURE__*/React.createElement("div", {
-      style: {
-        marginTop: 6,
-        fontSize: 11,
-        color: "#ffffff55",
-        fontFamily: "'Rajdhani',sans-serif",
-        borderTop: "1px solid #ffffff08",
-        paddingTop: 6
-      }
-    }, "\uD83D\uDCDD ", note));
-  }), Object.keys(data.sessions).length === 0 && /*#__PURE__*/React.createElement("div", {
-    style: {
-      textAlign: "center",
-      padding: "20px 0",
-      color: "#ffffff22",
-      fontFamily: "'Rajdhani',sans-serif"
-    }
-  }, "Aucune s\xE9ance encore enregistr\xE9e")))), tab === "progress" && /*#__PURE__*/React.createElement("div", {
-    style: S.col
-  }, /*#__PURE__*/React.createElement("div", {
-    style: S.card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 12
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: S.cardLbl
-  }, "MENSURATIONS (cm)"), /*#__PURE__*/React.createElement("button", {
-    className: "btn",
-    onClick: function onClick() {
-      return setModal("measure");
-    },
-    style: S.smBtn(rc)
-  }, "+ UPDATE")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: 8
-    }
-  }, [{
-    k: "chest",
-    l: "POITRINE",
-    i: "💪"
-  }, {
-    k: "waist",
-    l: "TAILLE",
-    i: "⚡"
-  }, {
-    k: "arm",
-    l: "BRAS",
-    i: "🔥"
-  }, {
-    k: "thigh",
-    l: "CUISSE",
-    i: "💎"
-  }].map(function (m) {
-    var val = data.measurements[m.k];
-    var hist = data.measureHistory.filter(function (e) {
-      return e[m.k];
-    });
-    var prev = hist.length >= 2 ? hist[hist.length - 2][m.k] : null;
-    var diff = val && prev ? (val - prev).toFixed(1) : null;
-    return /*#__PURE__*/React.createElement("div", {
-      key: m.k,
-      style: {
-        background: "#ffffff08",
-        borderRadius: 8,
-        padding: "11px 12px",
-        border: "1px solid #ffffff0a"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 8,
-        color: "#ffffff33",
-        fontFamily: "'Orbitron',monospace",
-        letterSpacing: 2
-      }
-    }, m.l), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: "'Orbitron',monospace",
-        fontSize: 20,
-        color: val ? "#fff" : "#ffffff22",
-        marginTop: 3
-      }
-    }, val || "—", val && /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 10,
-        color: "#ffffff44"
-      }
-    }, " cm")), diff && /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        fontFamily: "'Rajdhani',sans-serif",
-        color: parseFloat(diff) > 0 ? "#00ff88" : "#ff4444",
-        marginTop: 2
-      }
-    }, parseFloat(diff) > 0 ? "▲" : "▼", " ", Math.abs(diff), " cm"));
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: S.card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 10
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: S.cardLbl
-  }, "COURBE DE POIDS"), /*#__PURE__*/React.createElement("button", {
-    className: "btn",
-    onClick: function onClick() {
-      return setModal("weight");
-    },
-    style: S.smBtn(rc)
-  }, "+ POIDS")), data.weightHistory.length < 2 ? /*#__PURE__*/React.createElement("div", {
-    style: {
-      textAlign: "center",
-      padding: "20px 0",
-      color: "#ffffff22",
-      fontFamily: "'Rajdhani',sans-serif",
-      fontSize: 12
-    }
-  }, "Enregistre ton poids pour voir la courbe") : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "flex-end",
-      gap: 3,
-      height: 80,
-      marginBottom: 5
-    }
-  }, data.weightHistory.slice(-20).map(function (e, i, arr) {
-    var mn = Math.min.apply(Math, _toConsumableArray(arr.map(function (x) {
-      return x.weight;
-    })));
-    var mx = Math.max.apply(Math, _toConsumableArray(arr.map(function (x) {
-      return x.weight;
-    })));
-    var rng = mx - mn || 0.5;
-    var h = Math.max(8, (e.weight - mn) / rng * 65 + 8);
-    var isLast = i === arr.length - 1;
-    return /*#__PURE__*/React.createElement("div", {
-      key: i,
-      style: {
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 2
-      }
-    }, isLast && /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 8,
-        color: rc,
-        fontFamily: "'Orbitron',monospace"
-      }
-    }, toDisp(e.weight, u)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        width: "100%",
-        height: h,
-        background: isLast ? "linear-gradient(0deg,".concat(rc, "88,").concat(rc, ")") : "linear-gradient(0deg,".concat(rc, "1a,").concat(rc, "44)"),
-        borderRadius: "2px 2px 0 0",
-        marginTop: "auto"
-      }
-    }));
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      color: "#ffffff22",
-      fontSize: 10,
-      fontFamily: "'Rajdhani',sans-serif"
-    }
-  }, /*#__PURE__*/React.createElement("span", null, (_data$weightHistory$s = data.weightHistory.slice(-20)[0]) === null || _data$weightHistory$s === void 0 || (_data$weightHistory$s = _data$weightHistory$s.date) === null || _data$weightHistory$s === void 0 ? void 0 : _data$weightHistory$s.slice(5)), /*#__PURE__*/React.createElement("span", null, "Aujourd'hui"))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 8,
-      marginTop: 12
-    }
-  }, [{
-    l: "BMI",
-    v: bmi(data.currentWeight, data.heightCm),
-    s: parseFloat(bmi(data.currentWeight, data.heightCm)) < 18.5 ? "Sous-poids" : "Normal"
-  }, {
-    l: "TDEE",
-    v: myTdee,
-    s: "kcal maintien"
-  }, {
-    l: "SURPLUS",
-    v: "+400",
-    s: "kcal cible"
-  }].map(function (s) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: s.l,
-      style: {
-        flex: 1,
-        background: "#ffffff08",
-        borderRadius: 8,
-        padding: "8px 10px"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 8,
-        color: rc,
-        fontFamily: "'Orbitron',monospace",
-        letterSpacing: 1
-      }
-    }, s.l), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: "'Orbitron',monospace",
-        fontSize: 14,
-        color: "#fff",
-        marginTop: 3
-      }
-    }, s.v), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: "#ffffff33",
-        fontFamily: "'Rajdhani',sans-serif"
-      }
-    }, s.s));
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: S.card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: S.cardLbl
-  }, "VOLUME HEBDOMADAIRE (7 jours)"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 5,
-      marginTop: 10
-    }
-  }, Array.from({
-    length: 7
-  }, function (_, i) {
-    var d = new Date();
-    d.setDate(d.getDate() - (6 - i));
-    var k = d.toISOString().split("T")[0];
-    var dn = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"][d.getDay()];
-    var prog = PROGRAM[dn];
-    var sess = data.sessions[k] || {};
-    var done = Object.values(sess).filter(Boolean).length;
-    var isRest = prog.exercises.length === 0;
-    var pct = isRest ? 0 : prog.exercises.length ? done / prog.exercises.length : 0;
-    var vol = Object.values(data.sessionLogs[k] || {}).flat().reduce(function (s, e) {
-      return s + e.weight * (e.reps || 1);
-    }, 0);
-    return /*#__PURE__*/React.createElement("div", {
-      key: i,
-      style: {
-        flex: 1,
-        textAlign: "center"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 9,
-        color: rc,
-        fontFamily: "'Orbitron',monospace",
-        marginBottom: 3
-      }
-    }, vol > 0 ? Math.round(toDisp(vol, u) / 1000) + "k" : ""), /*#__PURE__*/React.createElement("div", {
-      style: {
-        height: 36,
-        borderRadius: 6,
-        background: isRest ? "#ffffff06" : pct >= 1 ? "".concat(prog.color, "66") : pct > 0 ? "".concat(prog.color, "22") : "#ffffff08",
-        border: "1px solid ".concat(isRest ? "#ffffff0a" : pct >= 1 ? prog.color + "66" : "#ffffff0a"),
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: 11
-      }
-    }, isRest ? "💤" : pct >= 1 ? "✓" : pct > 0 ? "~" : "✗"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 9,
-        color: "#ffffff33",
-        fontFamily: "'Rajdhani',sans-serif",
-        marginTop: 3
-      }
-    }, ["D", "L", "M", "Me", "J", "V", "S"][d.getDay()]));
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: S.card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: S.cardLbl
-  }, "PROJECTION"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: 10,
-      display: "flex",
-      flexDirection: "column",
-      gap: 7
-    }
-  }, [{
-    l: "Rythme conservateur (+0.3kg/sem)",
-    v: "~".concat(wl, " sem")
-  }, {
-    l: "Rythme optimal (+0.45kg/sem)",
-    v: "~".concat(Math.ceil((data.targetWeight - data.currentWeight) / 0.45), " sem")
-  }, {
-    l: "Date estimée",
-    v: function () {
-      var d = new Date();
-      d.setDate(d.getDate() + wl * 7);
-      return d.toLocaleDateString("fr-FR", {
-        month: "long",
-        year: "numeric"
-      });
-    }()
-  }, {
-    l: "Rang actuel",
-    v: rank,
-    c: rc
-  }, {
-    l: "Prochain rang",
-    v: rank === "S" ? "MAX 👑" : ["D", "C", "B", "A", "S"][["E", "D", "C", "B", "A"].indexOf(rank)] || "?"
-  }, {
-    l: "Semaine de décharge dans",
-    v: "".concat(DELOAD_EVERY - (weekNumber > 0 ? (weekNumber - 1) % DELOAD_EVERY : DELOAD_EVERY), " sem")
-  }].map(function (item) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: item.l,
-      style: {
-        display: "flex",
-        justifyContent: "space-between",
-        padding: "7px 0",
-        borderBottom: "1px solid #ffffff07"
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: "#ffffff44",
-        fontFamily: "'Rajdhani',sans-serif",
-        fontSize: 12
-      }
-    }, item.l), /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: item.c || "#fff",
-        fontFamily: "'Orbitron',monospace",
-        fontSize: 12
-      }
-    }, item.v));
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: S.card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: S.cardLbl
-  }, "RECORDS PERSONNELS \uD83C\uDFC6"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 5,
-      marginTop: 10
-    }
-  }, _toConsumableArray(new Set(Object.values(PROGRAM).flatMap(function (d) {
-    return d.exercises.map(function (e) {
-      return e.name;
-    });
-  }))).map(function (ex) {
-    var pr = prSet(ex);
-    var lc = lastSet(ex);
-    if (!pr) return null;
-    var improved = lc && lc.date === pr.date;
-    return /*#__PURE__*/React.createElement("div", {
-      key: ex,
-      style: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "8px 10px",
-        borderRadius: 7,
-        background: "#ffffff06",
-        border: "1px solid ".concat(improved ? "#ffd70022" : "#ffffff0a")
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: "'Rajdhani',sans-serif",
-        fontSize: 12,
-        color: "#ffffffbb"
-      }
-    }, ex), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: "'Orbitron',monospace",
-        fontSize: 12,
-        color: "#ffd700"
-      }
-    }, toDisp(pr.weight, u), uLabel(u), pr.reps ? "\xD7".concat(pr.reps) : "", improved ? " ✨" : ""));
-  }).filter(Boolean))))), modal === "weight" && /*#__PURE__*/React.createElement(Overlay, {
-    onClose: function onClose() {
-      return setModal(null);
-    },
-    rc: rc,
-    rg: rg,
-    title: "MISE \xC0 JOUR POIDS",
-    sub: "Actuel: ".concat(toDisp(data.currentWeight, u), " ").concat(uLabel(u), " \xB7 Saisir en ").concat(uLabel(u))
-  }, /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    value: inputs.weight,
-    onChange: function onChange(e) {
-      return inp("weight", e.target.value);
-    },
-    placeholder: u === "lbs" ? "Ex: 128.5" : "Ex: 58.5",
-    style: IS(rc),
-    autoFocus: true
-  }), /*#__PURE__*/React.createElement(MBtns, {
-    onClose: function onClose() {
-      return setModal(null);
-    },
-    onOk: function onOk() {
-      var w = parseFloat(inputs.weight);
-      if (isNaN(w) || w < 20 || w > 500) return;
-      var wkg = toKg(w, u);
-      save(function (d) {
-        return {
-          currentWeight: wkg,
-          weightHistory: [].concat(_toConsumableArray(d.weightHistory), [{
-            date: tKey(),
-            weight: wkg
-          }]).slice(-90)
-        };
-      });
-      inp("weight", "");
-      setModal(null);
-    },
-    rc: rc
-  })), modal === "cal" && /*#__PURE__*/React.createElement(Overlay, {
-    onClose: function onClose() {
-      return setModal(null);
-    },
-    rc: rc,
-    rg: rg,
-    title: "CALORIES DU JOUR",
-    sub: "Objectif: ".concat(targetCal, " kcal \xB7 Actuel: ").concat(todayCal)
-  }, /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    value: inputs.cal,
-    onChange: function onChange(e) {
-      return inp("cal", e.target.value);
-    },
-    placeholder: "Ex: ".concat(targetCal),
-    style: IS(rc),
-    autoFocus: true
-  }), /*#__PURE__*/React.createElement(MBtns, {
-    onClose: function onClose() {
-      return setModal(null);
-    },
-    onOk: function onOk() {
-      var c = parseInt(inputs.cal);
-      if (isNaN(c) || c <= 0) return;
-      save(function (d) {
-        return {
-          calorieLog: _objectSpread(_objectSpread({}, d.calorieLog), {}, _defineProperty({}, dk, c))
-        };
-      });
-      inp("cal", "");
-      setModal(null);
-    },
-    rc: rc
-  })), modal === "measure" && /*#__PURE__*/React.createElement(Overlay, {
-    onClose: function onClose() {
-      return setModal(null);
-    },
-    rc: rc,
-    rg: rg,
-    title: "MENSURATIONS",
-    sub: "En centim\xE8tres"
-  }, [["chest", "Poitrine"], ["waist", "Taille"], ["arm", "Bras (biceps)"], ["thigh", "Cuisse"]].map(function (_ref9) {
-    var _ref0 = _slicedToArray(_ref9, 2),
-      k = _ref0[0],
-      l = _ref0[1];
-    return /*#__PURE__*/React.createElement("input", {
-      key: k,
-      type: "number",
-      value: inputs[k],
-      onChange: function onChange(e) {
-        return inp(k, e.target.value);
-      },
-      placeholder: "".concat(l, " cm (actuel: ").concat(data.measurements[k] || "—", ")"),
-      style: _objectSpread(_objectSpread({}, IS(rc)), {}, {
-        marginBottom: 7
-      })
-    });
-  }), /*#__PURE__*/React.createElement(MBtns, {
-    onClose: function onClose() {
-      return setModal(null);
-    },
-    onOk: function onOk() {
-      var entry = _objectSpread({
-        date: tKey()
-      }, Object.fromEntries(["chest", "waist", "arm", "thigh"].map(function (k) {
-        return [k, parseFloat(inputs[k]) || data.measurements[k] || null];
-      })));
-      save(function (d) {
-        return {
-          measurements: _objectSpread({}, entry),
-          measureHistory: [].concat(_toConsumableArray(d.measureHistory), [entry]).slice(-50)
-        };
-      });
-      setInputs(function (i) {
-        return _objectSpread(_objectSpread({}, i), {}, {
-          chest: "",
-          waist: "",
-          arm: "",
-          thigh: ""
-        });
-      });
-      setModal(null);
-    },
-    rc: rc
-  })), modal === "note" && /*#__PURE__*/React.createElement(Overlay, {
-    onClose: function onClose() {
-      return setModal(null);
-    },
-    rc: rc,
-    rg: rg,
-    title: "NOTE DE S\xC9ANCE",
-    sub: today
-  }, /*#__PURE__*/React.createElement("textarea", {
-    value: noteText,
-    onChange: function onChange(e) {
-      return setNoteText(e.target.value);
-    },
-    placeholder: "Ex: Courbatures dos, bien dormi, PR d\xE9velopp\xE9 couch\xE9...",
-    style: _objectSpread(_objectSpread({}, IS(rc)), {}, {
-      height: 90,
-      resize: "none",
-      fontFamily: "'Rajdhani',sans-serif",
-      lineHeight: 1.6
-    })
-  }), /*#__PURE__*/React.createElement(MBtns, {
-    onClose: function onClose() {
-      return setModal(null);
-    },
-    onOk: function onOk() {
-      save(function (d) {
-        return {
-          sessionNotes: _objectSpread(_objectSpread({}, d.sessionNotes), {}, _defineProperty({}, dk, noteText))
-        };
-      });
-      setModal(null);
-    },
-    rc: rc
-  })), chargeModal && function () {
-    var ex = chargeModal;
-    var sets = todaySetsFor(ex);
-    var lc = lastSet(ex);
-    var pr = prSet(ex);
-    var exObj = Object.values(PROGRAM).flatMap(function (d) {
-      return d.exercises;
-    }).find(function (e) {
-      return e.name === ex;
-    });
-    var next = nextReco(ex, exObj === null || exObj === void 0 ? void 0 : exObj.reps);
-    return /*#__PURE__*/React.createElement(Overlay, {
-      onClose: function onClose() {
-        setChargeModal(null);
-        inp("charge", "");
-        inp("reps", "");
-      },
-      rc: rc,
-      rg: rg,
-      title: "S\xC9RIE ".concat(sets.length + 1),
-      sub: ex
-    }, (lc || pr) && /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        gap: 10,
-        marginBottom: 12,
-        padding: "8px 11px",
-        borderRadius: 8,
-        background: "#ffffff08",
-        border: "1px solid #ffffff0a"
-      }
-    }, lc && /*#__PURE__*/React.createElement("div", {
-      style: {
-        flex: 1
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 8,
-        color: "#ffffff33",
-        fontFamily: "'Orbitron',monospace"
-      }
-    }, "DERNI\xC8RE FOIS"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: "'Orbitron',monospace",
-        fontSize: 14,
-        color: "#fff",
-        marginTop: 2
-      }
-    }, toDisp(lc.weight, u), uLabel(u), lc.reps ? "\xD7".concat(lc.reps) : "")), pr && /*#__PURE__*/React.createElement("div", {
-      style: {
-        flex: 1,
-        borderLeft: "1px solid #ffffff0f",
-        paddingLeft: 10
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 8,
-        color: "#ffd70055",
-        fontFamily: "'Orbitron',monospace"
-      }
-    }, "\uD83C\uDFC6 PR"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: "'Orbitron',monospace",
-        fontSize: 14,
-        color: "#ffd700",
-        marginTop: 2
-      }
-    }, toDisp(pr.weight, u), uLabel(u), pr.reps ? "\xD7".concat(pr.reps) : ""))), sets.length > 0 && /*#__PURE__*/React.createElement("div", {
-      style: {
-        marginBottom: 12
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 8,
-        color: "#ffffff33",
-        fontFamily: "'Orbitron',monospace",
-        letterSpacing: 2,
-        marginBottom: 5
-      }
-    }, "S\xC9RIES AUJOURD'HUI"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        flexWrap: "wrap",
-        gap: 4
-      }
-    }, sets.map(function (s, i) {
-      return /*#__PURE__*/React.createElement("div", {
-        key: i,
-        style: {
-          padding: "3px 7px",
-          borderRadius: 4,
-          background: "".concat(rc, "1a"),
-          border: "1px solid ".concat(rc, "33"),
-          fontFamily: "'Orbitron',monospace",
-          fontSize: 9,
-          color: rc
-        }
-      }, "S", i + 1, " ", toDisp(s.weight, u), uLabel(u), s.reps ? "\xD7".concat(s.reps) : "");
-    }))), next && sets.length > 0 && /*#__PURE__*/React.createElement("div", {
-      style: {
-        marginBottom: 10,
-        padding: "6px 10px",
-        borderRadius: 6,
-        background: next.up ? "#00ff8808" : "#ffffff06",
-        border: "1px solid ".concat(next.up ? "#00ff8822" : "#ffffff0a"),
-        display: "flex",
-        justifyContent: "space-between"
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 10,
-        color: "#ffffff44",
-        fontFamily: "'Rajdhani',sans-serif"
-      }
-    }, next.note), /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: "'Orbitron',monospace",
-        fontSize: 11,
-        color: next.up ? "#00ff88" : "#ffffff66"
-      }
-    }, "\u2192 ", toDisp(next.weight, u), uLabel(u))), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        gap: 7,
-        marginBottom: 7
-      }
-    }, /*#__PURE__*/React.createElement("input", {
-      type: "number",
-      value: inputs.charge,
-      onChange: function onChange(e) {
-        return inp("charge", e.target.value);
-      },
-      placeholder: u === "lbs" ? "135 lbs" : "60 kg",
-      style: _objectSpread(_objectSpread({}, IS(rc)), {}, {
-        flex: 2,
-        marginBottom: 0
-      }),
-      autoFocus: true
-    }), /*#__PURE__*/React.createElement("input", {
-      type: "number",
-      value: inputs.reps,
-      onChange: function onChange(e) {
-        return inp("reps", e.target.value);
-      },
-      placeholder: "reps",
-      style: _objectSpread(_objectSpread({}, IS(rc)), {}, {
-        flex: 1,
-        marginBottom: 0
-      })
-    })), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        gap: 7
-      }
-    }, /*#__PURE__*/React.createElement("button", {
-      onClick: function onClick() {
-        setChargeModal(null);
-        inp("charge", "");
-        inp("reps", "");
-      },
-      style: {
-        flex: 1,
-        padding: "11px",
-        borderRadius: 8,
-        border: "1px solid #ffffff1a",
-        background: "transparent",
-        color: "#ffffff55",
-        fontFamily: "'Rajdhani',sans-serif",
-        cursor: "pointer",
-        fontSize: 13
-      }
-    }, "Terminer"), /*#__PURE__*/React.createElement("button", {
-      className: "btn",
-      onClick: function onClick() {
-        logSet();
-        if ((exObj === null || exObj === void 0 ? void 0 : exObj.rest) > 0) startTimer(ex, exObj.rest);
-      },
-      style: {
-        flex: 2,
-        padding: "11px",
-        borderRadius: 8,
-        border: "1px solid ".concat(rc),
-        background: "".concat(rc, "22"),
-        color: rc,
-        fontFamily: "'Orbitron',monospace",
-        fontSize: 11,
-        letterSpacing: 1
-      }
-    }, "\u2713 S", sets.length + 1, " + TIMER")));
-  }());
+  // Journal séances
+  histHTML+=`<div class="card"><div class="card-lbl" style="margin-bottom:10px;">JOURNAL DES SÉANCES</div>`;
+  const sessEntries=Object.entries(S.sessions).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,14);
+  if(!sessEntries.length){histHTML+=`<div style="text-align:center;padding:18px;color:#ffffff22;font-size:12px;">Aucune séance enregistrée</div>`;}
+  sessEntries.forEach(([date,sess])=>{
+    const doneCnt=Object.values(sess).filter(Boolean).length;
+    const dn=["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"][new Date(date+"T12:00:00").getDay()];
+    const prog=PROGRAM[dn];
+    const pct=prog.exercises.length?Math.round((doneCnt/prog.exercises.length)*100):0;
+    const vol=Object.values(S.sessionLogs[date]||{}).flat().reduce((s,e)=>s+e.weight*(e.reps||1),0);
+    const note=S.sessionNotes[date];
+    histHTML+=`<div style="padding:9px 11px;border-radius:8px;background:#ffffff06;border:1px solid #ffffff0a;margin-bottom:5px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-weight:600;font-size:13px;color:#fff;">${dn} <span style="color:#ffffff33;font-weight:400;">${date}</span></div><div class="orb" style="font-size:10px;color:${prog.color};margin-top:2px;">${prog.label}</div></div>
+        <div style="text-align:right;"><div class="orb" style="font-size:13px;color:${pct===100?"#00ff88":rk.c};">${pct}%</div>${vol>0?`<div style="font-size:10px;color:#ffffff33;">${toDisp(vol,u).toLocaleString()} ${uLbl(u)}</div>`:""}</div>
+      </div>
+      ${note?`<div style="margin-top:6px;font-size:11px;color:#ffffff44;border-top:1px solid #ffffff08;padding-top:5px;">📝 ${note}</div>`:""}
+    </div>`;
+  });
+  histHTML+="</div>";
+
+  // ── STATS ──
+  const wh=S.weightHistory.slice(-20);
+  let statsHTML=`
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;"><span class="card-lbl">MENSURATIONS (cm)</span><button class="sm-btn" style="border:1px solid ${rk.c}44;background:rgba(${rk.cr},.1);color:${rk.c};" onclick="openModal('measure')">+ UPDATE</button></div>
+    <div class="grid2" style="margin-bottom:0;">
+      ${[{k:"chest",l:"POITRINE"},{k:"waist",l:"TAILLE"},{k:"arm",l:"BRAS"},{k:"thigh",l:"CUISSE"}].map(m=>{
+        const val=S.measurements[m.k];
+        const hist=S.measureHistory.filter(e=>e[m.k]);
+        const prev=hist.length>=2?hist[hist.length-2][m.k]:null;
+        const diff=val&&prev?(val-prev).toFixed(1):null;
+        return `<div style="background:#ffffff08;border-radius:8px;padding:11px 12px;border:1px solid #ffffff0a;">
+          <div style="font-size:8px;color:#ffffff33;font-family:'Orbitron',monospace;letter-spacing:2px;">${m.l}</div>
+          <div class="orb" style="font-size:19px;color:${val?"#fff":"#ffffff22"};margin-top:3px;">${val||"—"}${val?`<span style="font-size:10px;color:#ffffff44;"> cm</span>`:""}</div>
+          ${diff?`<div style="font-size:10px;color:${parseFloat(diff)>0?"#00ff88":"#ff4444"};margin-top:2px;">${parseFloat(diff)>0?"▲":"▼"} ${Math.abs(diff)} cm</div>`:""}
+        </div>`;
+      }).join("")}
+    </div>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;"><span class="card-lbl">COURBE DE POIDS</span><button class="sm-btn" style="border:1px solid ${rk.c}44;background:rgba(${rk.cr},.1);color:${rk.c};" onclick="openModal('weight')">+ POIDS</button></div>
+    ${wh.length<2?`<div style="text-align:center;padding:18px;color:#ffffff22;font-size:12px;">Enregistre ton poids pour voir la courbe</div>`:`
+    <div style="display:flex;align-items:flex-end;gap:3px;height:76px;margin-bottom:5px;">
+      ${wh.map((e,i,arr)=>{const mn=Math.min(...arr.map(x=>x.weight));const mx=Math.max(...arr.map(x=>x.weight));const rng=mx-mn||.5;const h=Math.max(7,((e.weight-mn)/rng)*60+7);const last=i===arr.length-1;return`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">${last?`<div class="orb" style="font-size:7px;color:${rk.c};">${toDisp(e.weight,u)}</div>`:""}<div class="chart-bar" style="width:100%;height:${h}px;background:${last?`linear-gradient(0deg,${rk.c}88,${rk.c})`:`rgba(${rk.cr},.2)`};"></div></div>`;}).join("")}
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:#ffffff22;">${wh[0]?.date?.slice(5)}<span>Aujourd'hui</span></div>`}
+    <div style="display:flex;gap:8px;margin-top:11px;">
+      ${[{l:"BMI",v:calcBMI(S.currentWeight,S.heightCm),s:parseFloat(calcBMI(S.currentWeight,S.heightCm))<18.5?"Sous-poids":"Normal"},{l:"TDEE",v:myTdee,s:"kcal maintien"},{l:"SURPLUS",v:"+400",s:"kcal cible"}].map(s=>`<div style="flex:1;background:#ffffff08;border-radius:8px;padding:8px 9px;"><div class="orb" style="font-size:8px;color:${rk.c};letter-spacing:1px;">${s.l}</div><div class="orb" style="font-size:14px;color:#fff;margin-top:3px;">${s.v}</div><div style="font-size:10px;color:#ffffff33;">${s.s}</div></div>`).join("")}
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-lbl" style="margin-bottom:10px;">SÉANCES — 7 DERNIERS JOURS</div>
+    <div style="display:flex;gap:5px;">
+      ${Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));const k=d.toISOString().split("T")[0];const dn=["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"][d.getDay()];const prog=PROGRAM[dn];const ss=S.sessions[k]||{};const done=Object.values(ss).filter(Boolean).length;const isRest=!prog.exercises.length;const pct=isRest?0:prog.exercises.length?done/prog.exercises.length:0;const vol=Object.values(S.sessionLogs[k]||{}).flat().reduce((s,e)=>s+e.weight*(e.reps||1),0);return`<div style="flex:1;text-align:center;"><div style="font-size:8px;color:${rk.c};font-family:'Orbitron',monospace;margin-bottom:2px;">${vol>0?Math.round(toDisp(vol,u)/1000)+"k":""}</div><div style="height:36px;border-radius:6px;background:${isRest?"#ffffff06":pct>=1?`rgba(${prog.craw},.4)`:pct>0?`rgba(${prog.craw},.15)`:"#ffffff08"};border:1px solid ${isRest?"#ffffff0a":pct>=1?prog.color+"66":"#ffffff0a"};display:flex;align-items:center;justify-content:center;font-size:12px;">${isRest?"💤":pct>=1?"✓":pct>0?"~":"✗"}</div><div style="font-size:9px;color:#ffffff33;margin-top:3px;">${["D","L","M","Me","J","V","S"][d.getDay()]}</div></div>`;}).join("")}
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-lbl" style="margin-bottom:10px;">PROJECTION</div>
+    ${[
+      {l:"Rythme conservateur (+0.3kg/sem)",v:`~${wl} sem`},
+      {l:"Rythme optimal (+0.45kg/sem)",v:`~${Math.ceil((S.targetWeight-S.currentWeight)/0.45)} sem`},
+      {l:"Date estimée",v:(()=>{const d=new Date();d.setDate(d.getDate()+wl*7);return d.toLocaleDateString("fr-FR",{month:"long",year:"numeric"});})()},
+      {l:"Rang actuel",v:rk.r,c:rk.c},
+      {l:"Prochain rang",v:rk.r==="S"?"MAX 👑":["D","C","B","A","S"][["E","D","C","B","A"].indexOf(rk.r)]||"?"},
+      {l:"Décharge dans",v:`${DELOAD_EVERY-(weekNum>0?((weekNum-1)%DELOAD_EVERY):DELOAD_EVERY)} sem`},
+    ].map(item=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #ffffff07;"><span style="color:#ffffff44;font-size:12px;">${item.l}</span><span class="orb" style="font-size:12px;color:${item.c||"#fff"};">${item.v}</span></div>`).join("")}
+  </div>
+  <div class="card">
+    <div class="card-lbl" style="margin-bottom:10px;">RECORDS PERSONNELS 🏆</div>
+    ${ALL_EX.map(ex=>{const pr=prSet(ex);const lc=lastSet(ex);if(!pr)return"";const fresh=lc&&lc.date===pr.date;return`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:7px;background:#ffffff06;border:1px solid ${fresh?"#ffd70022":"#ffffff0a"};margin-bottom:5px;"><div style="font-size:12px;color:#ffffffbb;">${ex}</div><div class="orb" style="font-size:12px;color:#ffd700;">${toDisp(pr.weight,u)}${uLbl(u)}${pr.reps?`×${pr.reps}`:""} ${fresh?"✨":""}</div></div>`;}).join("")}
+  </div>`;
+
+  // ASSEMBLE
+  const sections={dashboard:dashHTML,today:seanceHTML,meals:repasHTML,history:histHTML,progress:statsHTML};
+  app.innerHTML=headerHTML+tabsHTML+Object.entries(sections).map(([id,html])=>`<div class="section fade${currentTab===id?" active":""}" id="sec-${id}">${html}</div>`).join("");
 }
 
-// ─── REUSABLE COMPONENTS ─────────────────────────────────────────────────────
-function Overlay(_ref1) {
-  var children = _ref1.children,
-    onClose = _ref1.onClose,
-    rc = _ref1.rc,
-    rg = _ref1.rg,
-    title = _ref1.title,
-    sub = _ref1.sub;
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      position: "fixed",
-      inset: 0,
-      background: "#000000cc",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      zIndex: 1000,
-      padding: 18
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: "#0e0e1a",
-      border: "1px solid ".concat(rc, "55"),
-      borderRadius: 16,
-      padding: 22,
-      width: "100%",
-      maxWidth: 340,
-      boxShadow: "0 0 40px ".concat(rg),
-      maxHeight: "90vh",
-      overflowY: "auto"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 13,
-      color: rc,
-      marginBottom: 3
-    }
-  }, title), /*#__PURE__*/React.createElement("div", {
-    style: {
-      color: "#ffffff44",
-      fontSize: 11,
-      fontFamily: "'Rajdhani',sans-serif",
-      marginBottom: 16
-    }
-  }, sub), children));
-}
-function MBtns(_ref10) {
-  var onClose = _ref10.onClose,
-    onOk = _ref10.onOk,
-    rc = _ref10.rc;
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 8,
-      marginTop: 4
-    }
-  }, /*#__PURE__*/React.createElement("button", {
-    onClick: onClose,
-    style: {
-      flex: 1,
-      padding: "11px",
-      borderRadius: 8,
-      border: "1px solid #ffffff1a",
-      background: "transparent",
-      color: "#ffffff55",
-      fontFamily: "'Rajdhani',sans-serif",
-      cursor: "pointer",
-      fontSize: 13
-    }
-  }, "Annuler"), /*#__PURE__*/React.createElement("button", {
-    onClick: onOk,
-    style: {
-      flex: 1,
-      padding: "11px",
-      borderRadius: 8,
-      border: "1px solid ".concat(rc),
-      background: "".concat(rc, "22"),
-      color: rc,
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 11,
-      cursor: "pointer",
-      letterSpacing: 1
-    }
-  }, "CONFIRMER"));
-}
-function IS(rc) {
-  return {
-    width: "100%",
-    background: "#ffffff08",
-    border: "1px solid ".concat(rc, "33"),
-    borderRadius: 8,
-    padding: "11px 13px",
-    color: "#fff",
-    fontFamily: "'Rajdhani',sans-serif",
-    fontSize: 15,
-    outline: "none",
-    display: "block",
-    marginBottom: 0
-  };
+function statCard(label,val,sub,color){
+  return `<div class="stat-card"><div class="stat-lbl" style="color:${color};">${label}</div><div class="stat-val">${val}</div><div class="stat-sub">${sub}</div></div>`;
 }
 
-// ─── STYLES ──────────────────────────────────────────────────────────────────
-var S = {
-  root: {
-    minHeight: "100vh",
-    background: "#07070e",
-    color: "#fff",
-    position: "relative",
-    overflow: "hidden"
-  },
-  wrap: {
-    maxWidth: 480,
-    margin: "0 auto",
-    padding: "18px 14px 60px",
-    position: "relative",
-    zIndex: 1
-  },
-  header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-    padding: "13px 16px",
-    background: "linear-gradient(135deg,#0e0e1a,#111118)",
-    borderRadius: 14,
-    border: "1px solid #ffffff0d"
-  },
-  rankBadge: {
-    width: 62,
-    height: 62,
-    borderRadius: 13,
-    border: "2px solid",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    background: "#07070e"
-  },
-  col: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 11
-  },
-  card: {
-    background: "linear-gradient(135deg,#0e0e1a,#0a0a12)",
-    border: "1px solid #ffffff0d",
-    borderRadius: 12,
-    padding: "14px"
-  },
-  statCard: {
-    background: "linear-gradient(135deg,#0e0e1a,#0a0a12)",
-    border: "1px solid #ffffff0d",
-    borderRadius: 12,
-    padding: "12px 13px"
-  },
-  cardLbl: {
-    fontFamily: "'Orbitron',monospace",
-    fontSize: 9,
-    color: "#ffffff33",
-    letterSpacing: 3
-  },
-  smBtn: function smBtn(rc) {
-    return {
-      padding: "4px 10px",
-      borderRadius: 5,
-      border: "1px solid ".concat(rc, "44"),
-      background: "".concat(rc, "15"),
-      color: rc,
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 9,
-      cursor: "pointer",
-      letterSpacing: 1
-    };
-  },
-  actionBtn: function actionBtn(c) {
-    var bg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "#ffffff08";
-    var b = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "#ffffff11";
-    return {
-      padding: "12px",
-      borderRadius: 11,
-      border: "1px solid ".concat(b),
-      background: bg,
-      color: c,
-      fontFamily: "'Orbitron',monospace",
-      fontSize: 11,
-      cursor: "pointer",
-      letterSpacing: 1,
-      textAlign: "center",
-      width: "100%"
-    };
+// ═══════════════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════════════
+function switchTab(t){currentTab=t;render();}
+function setDay(d){currentDay=d;render();}
+function toggleUnit(){S.unit=S.unit==="kg"?"lbs":"kg";save();}
+
+function toggleEx(name){
+  const dk=tKey();
+  if(!S.sessions[dk])S.sessions[dk]={};
+  S.sessions[dk][name]=!S.sessions[dk][name];
+  save();
+}
+function toggleMeal(id){
+  const dk=tKey();
+  if(!S.meals[dk])S.meals[dk]={};
+  S.meals[dk][id]=!S.meals[dk][id];
+  save();
+}
+function toggleHistEx(ex){histEx=histEx===ex?null:ex;render();}
+
+function removeLastSet(ex){
+  const dk=tKey();
+  if(S.sessionLogs[dk]&&S.sessionLogs[dk][ex]){
+    S.sessionLogs[dk][ex].pop();
+    save();
   }
-};
-    const root = ReactDOM.createRoot(document.getElementById("root"));
-    root.render(React.createElement(App));
-  </script>
+}
+
+async function toggleNotif(){
+  if(!S.notifEnabled){
+    const perm=await Notification.requestPermission();
+    if(perm==="granted"){S.notifEnabled=true;save();}
+    else alert("Active les notifications dans les réglages Safari.");
+  } else {S.notifEnabled=false;save();}
+}
+
+// ═══════════════════════════════════════════════════════════
+// MODALS
+// ═══════════════════════════════════════════════════════════
+function renderModal(){
+  const rk=getRank(S.currentWeight,S.targetWeight);
+  const u=S.unit;
+  const dk=tKey();
+  const myTdee=calcTDEE(S.currentWeight,S.heightCm);
+  const targetCal=myTdee+400;
+  const title=document.getElementById("modal-title");
+  const sub=document.getElementById("modal-sub");
+  const body=document.getElementById("modal-body");
+
+  if(currentModal==="weight"){
+    title.textContent="MISE À JOUR POIDS";
+    sub.textContent=`Actuel: ${toDisp(S.currentWeight,u)} ${uLbl(u)} · Saisir en ${uLbl(u)}`;
+    body.innerHTML=`<input class="m-input" type="number" id="mi-w" placeholder="${u==="lbs"?"Ex: 128.5":"Ex: 58.5"}" inputmode="decimal"/>
+    <div class="m-btns"><button class="m-cancel" onclick="closeModal()">Annuler</button><button class="m-ok" onclick="confirmWeight()">CONFIRMER</button></div>`;
+    setTimeout(()=>document.getElementById("mi-w")?.focus(),100);
+  }
+  else if(currentModal==="cal"){
+    title.textContent="CALORIES DU JOUR";
+    sub.textContent=`Objectif: ${targetCal} kcal · Actuel: ${S.calorieLog[dk]||0}`;
+    body.innerHTML=`<input class="m-input" type="number" id="mi-cal" placeholder="Ex: ${targetCal}" inputmode="numeric"/>
+    <div class="m-btns"><button class="m-cancel" onclick="closeModal()">Annuler</button><button class="m-ok" onclick="confirmCal()">CONFIRMER</button></div>`;
+    setTimeout(()=>document.getElementById("mi-cal")?.focus(),100);
+  }
+  else if(currentModal==="measure"){
+    title.textContent="MENSURATIONS";
+    sub.textContent="En centimètres";
+    body.innerHTML=`
+    ${[["chest","Poitrine"],["waist","Taille"],["arm","Bras (biceps)"],["thigh","Cuisse"]].map(([k,l])=>`<input class="m-input" type="number" id="mi-${k}" placeholder="${l} cm (actuel: ${S.measurements[k]||"—"})" inputmode="decimal"/>`).join("")}
+    <div class="m-btns"><button class="m-cancel" onclick="closeModal()">Annuler</button><button class="m-ok" onclick="confirmMeasure()">CONFIRMER</button></div>`;
+  }
+  else if(currentModal==="note"){
+    const today=todayName();
+    title.textContent="NOTE DE SÉANCE";
+    sub.textContent=today;
+    body.innerHTML=`<textarea class="m-input" id="mi-note" rows="4" style="height:90px;line-height:1.6;" placeholder="Ex: Courbatures dos, bien dormi, PR développé couché...">${S.sessionNotes[dk]||""}</textarea>
+    <div class="m-btns"><button class="m-cancel" onclick="closeModal()">Annuler</button><button class="m-ok" onclick="confirmNote()">CONFIRMER</button></div>`;
+    setTimeout(()=>document.getElementById("mi-note")?.focus(),100);
+  }
+  else if(currentModal&&currentModal.startsWith("charge:")){
+    const [,exName,repRange,restSecs]=currentModal.split("::");
+    const sets=todaySetsFor(exName);
+    const lc=lastSet(exName);
+    const pr=prSet(exName);
+    const next=nextReco(exName,repRange);
+    title.textContent=`SÉRIE ${sets.length+1}`;
+    sub.textContent=exName;
+    let html="";
+    if(lc||pr){
+      html+=`<div style="display:flex;gap:10px;margin-bottom:12px;padding:8px 11px;border-radius:8px;background:#ffffff08;border:1px solid #ffffff0a;">
+        ${lc?`<div style="flex:1;"><div style="font-size:8px;color:#ffffff33;font-family:'Orbitron',monospace;">DERNIÈRE FOIS</div><div class="orb" style="font-size:14px;color:#fff;margin-top:2px;">${toDisp(lc.weight,u)}${uLbl(u)}${lc.reps?`×${lc.reps}`:""}</div></div>`:""}
+        ${pr?`<div style="flex:1;border-left:1px solid #ffffff0f;padding-left:10px;"><div style="font-size:8px;color:#ffd70055;font-family:'Orbitron',monospace;">🏆 PR</div><div class="orb" style="font-size:14px;color:#ffd700;margin-top:2px;">${toDisp(pr.weight,u)}${uLbl(u)}${pr.reps?`×${pr.reps}`:""}</div></div>`:""}
+      </div>`;
+    }
+    if(sets.length){
+      html+=`<div style="margin-bottom:11px;">
+        <div style="font-size:8px;color:#ffffff33;font-family:'Orbitron',monospace;letter-spacing:2px;margin-bottom:5px;">SÉRIES AUJOURD'HUI</div>
+        <div>${sets.map((s,i)=>`<span class="set-badge" style="background:rgba(${rk.cr},.1);border:1px solid rgba(${rk.cr},.3);color:${rk.c};">S${i+1} ${toDisp(s.weight,u)}${uLbl(u)}${s.reps?`×${s.reps}`:""}</span>`).join("")}</div>
+      </div>`;
+    }
+    if(next&&sets.length){
+      html+=`<div style="margin-bottom:10px;padding:6px 10px;border-radius:6px;background:${next.up?"#00ff8808":"#ffffff06"};border:1px solid ${next.up?"#00ff8822":"#ffffff0a"};display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:10px;color:#ffffff44;">${next.note}</span>
+        <span class="orb" style="font-size:11px;color:${next.up?"#00ff88":"#ffffff66"};">→ ${toDisp(next.w,u)}${uLbl(u)}</span>
+      </div>`;
+    }
+    html+=`<div style="display:flex;gap:7px;margin-bottom:7px;">
+      <input class="m-input" type="number" id="mi-charge" placeholder="${u==="lbs"?"135 lbs":"60 kg"}" inputmode="decimal" style="flex:2;margin-bottom:0;"/>
+      <input class="m-input" type="number" id="mi-reps" placeholder="reps" inputmode="numeric" style="flex:1;margin-bottom:0;"/>
+    </div>
+    <div class="m-btns">
+      <button class="m-cancel" onclick="closeModal()">Terminer</button>
+      <button class="m-ok" onclick="confirmCharge('${exName.replace(/'/g,"\\'")}','${repRange}',${restSecs})">✓ S${sets.length+1} + TIMER</button>
+    </div>`;
+    body.innerHTML=html;
+    setTimeout(()=>document.getElementById("mi-charge")?.focus(),100);
+  }
+}
+
+function openNoteModal(){openModal("note");}
+function openChargeModal(ex,reps,rest){currentModal=`charge::${ex}::${reps}::${rest}`;renderModal();document.getElementById("modal-overlay").classList.add("show");}
+
+function confirmWeight(){
+  const w=parseFloat(document.getElementById("mi-w")?.value);
+  if(isNaN(w)||w<20||w>500)return;
+  const wkg=toKg(w,S.unit);
+  S.currentWeight=wkg;
+  S.weightHistory=[...S.weightHistory,{date:tKey(),weight:wkg}].slice(-90);
+  save();closeModal();
+}
+function confirmCal(){
+  const c=parseInt(document.getElementById("mi-cal")?.value);
+  if(isNaN(c)||c<=0)return;
+  S.calorieLog[tKey()]=c;
+  save();closeModal();
+}
+function confirmMeasure(){
+  const entry={date:tKey()};
+  ["chest","waist","arm","thigh"].forEach(k=>{const v=parseFloat(document.getElementById(`mi-${k}`)?.value);if(v)entry[k]=v;else if(S.measurements[k])entry[k]=S.measurements[k];});
+  S.measurements={...S.measurements,...entry};
+  S.measureHistory=[...S.measureHistory,entry].slice(-50);
+  save();closeModal();
+}
+function confirmNote(){
+  const n=document.getElementById("mi-note")?.value||"";
+  S.sessionNotes[tKey()]=n;
+  save();closeModal();
+}
+function confirmCharge(ex,repRange,rest){
+  const c=parseFloat(document.getElementById("mi-charge")?.value);
+  const r=parseInt(document.getElementById("mi-reps")?.value);
+  if(isNaN(c)||c<=0)return;
+  const wkg=toKg(c,S.unit);
+  const dk=tKey();
+  if(!S.sessionLogs[dk])S.sessionLogs[dk]={};
+  if(!S.sessionLogs[dk][ex])S.sessionLogs[dk][ex]=[];
+  S.sessionLogs[dk][ex].push({weight:wkg,reps:r||null});
+  if(!S.charges[ex])S.charges[ex]=[];
+  S.charges[ex]=[...S.charges[ex],{date:dk,weight:wkg,reps:r||null}].slice(-200);
+  if(rest>0)startTimer(ex,rest);
+  save();
+  // Reopen modal for next set
+  openChargeModal(ex,repRange,rest);
+}
+
+// ═══════════════════════════════════════════════════════════
+// PARTICLES
+// ═══════════════════════════════════════════════════════════
+function initParticles(){
+  const container=document.getElementById("particles");
+  for(let i=0;i<22;i++){
+    const el=document.createElement("div");
+    el.className="pt";
+    el.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${Math.random()*2.5+1}px;height:${Math.random()*2.5+1}px;animation:fp ${Math.random()*18+8}s ${Math.random()*4}s infinite alternate ease-in-out;`;
+    container.appendChild(el);
+  }
+}
+
+function updateParticleColor(){
+  const rk=getRank(S.currentWeight,S.targetWeight);
+  document.querySelectorAll(".pt").forEach(el=>el.style.background=rk.c);
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+initParticles();
+render();
+setInterval(updateParticleColor,2000);
+
+// Notification reminders
+function scheduleNotifs(){
+  if(!S.notifEnabled||Notification.permission!=="granted")return;
+  const now=new Date();
+  MEALS.forEach(m=>{
+    const t=new Date();t.setHours(m.hour,0,0,0);
+    const diff=t-now;
+    if(diff>0)setTimeout(()=>{
+      const meals=S.meals[tKey()]||{};
+      if(!meals[m.id])new Notification(`🍽 Heure du ${m.label}`,{body:`${m.kcal} kcal — n'oublie pas !`});
+    },diff);
+  });
+  const seance=new Date();seance.setHours(7,30,0,0);
+  const sdiff=seance-now;
+  const dn=todayName();
+  if(sdiff>0&&PROGRAM[dn].exercises.length>0)
+    setTimeout(()=>new Notification(`⚔️ Séance: ${PROGRAM[dn].label}`,{body:"Hunter Protocol activé 💪"}),sdiff);
+}
+scheduleNotifs();
+</script>
 </body>
 </html>
